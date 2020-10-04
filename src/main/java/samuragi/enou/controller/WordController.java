@@ -31,11 +31,11 @@ public class WordController {
     SessionHolder sessionHolder;
 
     @PostMapping
-    @ResponseStatus(HttpStatus.ACCEPTED)
-    public void saveWord(@RequestBody @Valid DtoWebUserWord webUserWord) {
+    @ResponseStatus(HttpStatus.OK)
+    public DtoWebUserWord saveWord(@RequestBody @Valid DtoWebUserWord webUserWord) {
         String word = webUserWord.getWord().toLowerCase();
         webUserWord.setWord(word);
-        userWordService.saveWord(webUserWord);
+        return userWordService.saveWord(webUserWord);
     }
 
     @GetMapping
@@ -48,8 +48,8 @@ public class WordController {
         return userWordService.getAllWordsAfter(time);
     }
 
-    @PatchMapping()
-    @ResponseStatus(HttpStatus.ACCEPTED)
+    @PutMapping()
+    @ResponseStatus(HttpStatus.OK)
     public void modifyWord(@RequestBody @Valid DtoWebUserWord webUserWord) {
         userWordService.updateWord(webUserWord);
     }

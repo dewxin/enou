@@ -32,8 +32,9 @@ public class TUserWordService implements IUserWordService{
     public DtoWebUserWord saveWord(DtoWebUserWord webUserWord) {
 
         Long userId = sessionHolder.getUserId();
-        Integer ret = wordRepository.saveOrPlusQueryTime(userId, webUserWord.getWord());
-        return webUserWord;
+        int ret = wordRepository.saveOrPlusQueryTime(userId, webUserWord.getWord());
+        DtoDbUserWord dbUserWord = wordRepository.getByUserIdAndWord(userId, webUserWord.getWord());
+        return dbUserWord.toDtoWeb();
     }
 
     @Override

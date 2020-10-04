@@ -18,12 +18,15 @@ import java.util.List;
  */
 public interface UserWordRepository extends CrudRepository<DtoDbUserWord, Long> {
 
+    //todo use mybatis
     @Query("INSERT INTO user_word(user_id, word) VALUES(:userId, :word) ON DUPLICATE KEY UPDATE query_time=query_time+1")
     @Modifying()
     int saveOrPlusQueryTime(@Param("userId")Long userId, @Param("word") String word);
 
 
     List<DtoDbUserWord> getAllByUserIdAndCreatedAtAfter(Long userId, Timestamp time);
+
+    DtoDbUserWord getByUserIdAndWord(Long userId, String word);
 
     @Query("UPDATE user_word SET word=:word where id=:id")
     @Modifying()
