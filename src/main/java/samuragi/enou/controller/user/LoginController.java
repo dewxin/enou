@@ -20,7 +20,7 @@ public class LoginController {
     @Autowired
     IUserService userService;
 
-    @ResponseStatus(HttpStatus.CREATED)
+    @ResponseStatus(HttpStatus.OK)
     @PostMapping
     public String getToken(@RequestBody @Valid DtoWebUser user) throws AccountException {
         DtoWebUser webUser = userService.findByAccountAndPassword(user);

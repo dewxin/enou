@@ -39,7 +39,9 @@ public class TUserWordService implements IUserWordService{
 
     @Override
     public DtoWebUserWord updateWord(DtoWebUserWord webUserWord) {
-        wordRepository.updateWord(webUserWord.getId(), webUserWord.getWord());
+        //todo if the word  after modified already existed in the database,
+        // there will be an error.
+        wordRepository.update(webUserWord.toDtoDb());
         return webUserWord;
     }
 

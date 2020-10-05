@@ -5,6 +5,7 @@ import org.springframework.data.jdbc.repository.query.Query;
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.data.repository.query.Param;
 import samuragi.enou.dto.dtodb.DtoDbUserWord;
+import samuragi.enou.repository.ext.UserWordExt;
 
 import java.sql.Timestamp;
 import java.util.List;
@@ -16,9 +17,8 @@ import java.util.List;
  * @Description:
  * @Attention:
  */
-public interface UserWordRepository extends CrudRepository<DtoDbUserWord, Long> {
+public interface UserWordRepository extends CrudRepository<DtoDbUserWord, Long> , UserWordExt {
 
-    //todo use mybatis
     @Query("INSERT INTO user_word(user_id, word) VALUES(:userId, :word) ON DUPLICATE KEY UPDATE query_time=query_time+1")
     @Modifying()
     int saveOrPlusQueryTime(@Param("userId")Long userId, @Param("word") String word);
@@ -27,8 +27,4 @@ public interface UserWordRepository extends CrudRepository<DtoDbUserWord, Long> 
     List<DtoDbUserWord> getAllByUserIdAndCreatedAtAfter(Long userId, Timestamp time);
 
     DtoDbUserWord getByUserIdAndWord(Long userId, String word);
-
-    @Query("UPDATE user_word SET word=:word where id=:id")
-    @Modifying()
-    int updateWord(@Param("id") Long id, @Param("word") String word);
 }

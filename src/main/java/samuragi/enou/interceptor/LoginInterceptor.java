@@ -38,7 +38,6 @@ public class LoginInterceptor implements HandlerInterceptor  {
 
     @Autowired
     public LoginInterceptor(RedisProperty redisProperty) {
-        //todo object pool reuse.
         jedis = new Jedis(redisProperty.getHost());
     }
 
