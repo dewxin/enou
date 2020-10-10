@@ -8,22 +8,28 @@
         <version>2.3.3.RELEASE</version>
         <relativePath/> <!-- lookup parent from repository -->
     </parent>
-    <groupId>samuragi</groupId>
-    <artifactId>enou</artifactId>
+    
+    
+    <groupId>fun.enou.alpha</groupId>
+    <artifactId>alpha-base</artifactId>
     <version>0.0.1-SNAPSHOT</version>
-    <name>enou</name>
-    <description>Demo project for Spring Boot</description>
+    <packaging>pom</packaging>
+    <name>enou-alpha-pom</name>
+    <description>pom project</description>
+    
+    
+    <modules>
+    	<module>enou-core</module>
+    	<module>enou-alpha-server</module>
+    </modules>
+    
 
     <properties>
+    	<lombok.version>1.14.8</lombok.version>
         <java.version>1.8</java.version>
     </properties>
 
     <dependencies>
-        <dependency>
-            <groupId>net.mamoe</groupId>
-            <artifactId>mirai-core-qqandroid</artifactId>
-            <version>1.3.1</version> <!-- 替换版本为最新版本 -->
-        </dependency>
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-data-jdbc</artifactId>
@@ -47,12 +53,12 @@
             <artifactId>spring-data-redis</artifactId>
         </dependency>
 
-        <!-- https://mvnrepository.com/artifact/org.projectlombok/lombok -->
-        <dependency>
-            <groupId>org.projectlombok</groupId>
-            <artifactId>lombok</artifactId>
-            <scope>provided</scope>
-        </dependency>
+		<!-- https://mvnrepository.com/artifact/org.projectlombok/lombok -->
+		<dependency>
+			<groupId>org.projectlombok</groupId>
+			<artifactId>lombok</artifactId>
+			<scope>provided</scope>
+		</dependency>
 
 
         <dependency>
@@ -118,7 +124,6 @@
         <dependency>
             <groupId>org.springframework.security</groupId>
             <artifactId>spring-security-core</artifactId>
-            <version>5.3.4.RELEASE</version>
             <scope>compile</scope>
         </dependency>
     </dependencies>
@@ -126,8 +131,13 @@
     <build>
         <plugins>
             <plugin>
-                <groupId>org.springframework.boot</groupId>
-                <artifactId>spring-boot-maven-plugin</artifactId>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <!--suppress UnresolvedMavenProperty -->
+                <configuration>
+                    <source>${java.version}</source>
+                    <target>${java.version}</target>
+                </configuration>
             </plugin>
         </plugins>
     </build>

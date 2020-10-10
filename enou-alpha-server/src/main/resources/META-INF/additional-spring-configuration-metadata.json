@@ -1,0 +1,27 @@
+{
+  "properties": [
+    {
+      "name": "enou.redis.host",
+      "type": "java.lang.String",
+      "sourceType": "fun.enou.alpha.config.property.RedisProperty",
+      "description": "Description for enou.redis.host."
+    },
+    {
+      "name": "enou.token.duration-hour",
+      "type": "java.lang.Integer",
+      "sourceType": "fun.enou.alpha.config.property.TokenProperty",
+      "description": "Description for enou.token.duration-hour."
+    },
+    {
+      "name": "enou.token.redis-key",
+      "type": "java.lang.String",
+      "sourceType": "fun.enou.alpha.config.property.TokenProperty",
+      "description": "Description for enou.token.redis-key."
+    },
+    {
+      "name": "enou.token.header-name",
+      "type": "java.lang.String",
+      "sourceType": "fun.enou.alpha.config.property.TokenProperty",
+      "description": "Description for enou.token.headerName."
+    }
+  ] }
