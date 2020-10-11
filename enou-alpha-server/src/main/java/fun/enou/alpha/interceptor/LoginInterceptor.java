@@ -66,6 +66,7 @@ public class LoginInterceptor implements HandlerInterceptor  {
             }
 
             sessionHolder.setUserIdLocal(userId);
+            sessionHolder.setUserToken(headerToken);
         }
         catch (AccountTokenException e) {
             throw  e;

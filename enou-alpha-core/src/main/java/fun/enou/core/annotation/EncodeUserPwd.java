@@ -13,8 +13,6 @@ import java.lang.annotation.*;
  * @see IHasPassword
  */
 
-//todo move to  lower library
-    //todo learn maven
 @Documented
 @Target({ElementType.METHOD})
 @Retention(RetentionPolicy.RUNTIME)

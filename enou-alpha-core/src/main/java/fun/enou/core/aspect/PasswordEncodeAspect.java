@@ -1,5 +1,6 @@
 package fun.enou.core.aspect;
 
+import fun.enou.core.EnouPwdEncoder;
 import fun.enou.core.IHasPassword;
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.Around;
@@ -16,12 +17,13 @@ import java.util.List;
 @Component
 public class PasswordEncodeAspect {
 
-    private static final org.slf4j.Logger log = org.slf4j.LoggerFactory.getLogger(PasswordEncodeAspect.class);
-
-    @Autowired
     PasswordEncoder passwordEncoder;
+    
+    public PasswordEncodeAspect(String salt) {
+    	passwordEncoder = new EnouPwdEncoder(salt);
+	}
 
-    @Around(value = "execution(* *.*(..)) && @annotation(samuragi.enou._enoucore.annotation.EncodeUserPwd)")
+    @Around(value = "execution(* *.*(..)) && @annotation(fun.enou.core.annotation.EncodeUserPwd)")
     public Object encodePassword(ProceedingJoinPoint joinPoint) throws Throwable {
 
         List<Object> oldArgsList = Arrays.asList(joinPoint.getArgs());

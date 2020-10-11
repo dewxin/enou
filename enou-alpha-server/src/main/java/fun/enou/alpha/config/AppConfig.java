@@ -2,6 +2,8 @@ package fun.enou.alpha.config;
 
 import fun.enou.alpha.config.property.RedisProperty;
 import fun.enou.core.EnouPwdEncoder;
+import fun.enou.core.aspect.PasswordEncodeAspect;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.web.servlet.FilterRegistrationBean;
 import org.springframework.context.annotation.Bean;
@@ -18,8 +20,8 @@ public class AppConfig {
     RedisProperty redisProperty;
 
     @Bean
-    public PasswordEncoder encoder() {
-        return new EnouPwdEncoder("enou$Salt$");
+    public PasswordEncodeAspect passwordEncodeAspect() {
+    	return new PasswordEncodeAspect("enou$Salt$");
     }
 
     @Bean

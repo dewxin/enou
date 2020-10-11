@@ -3,7 +3,6 @@ package fun.enou.alpha.service;
 import fun.enou.alpha.dto.dtodb.DtoDbArticle;
 import fun.enou.alpha.dto.dtoweb.DtoWebArticle;
 import fun.enou.alpha.repository.ArticleRepository;
-import fun.enou.alpha.service.IArticleService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;

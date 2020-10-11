@@ -55,7 +55,7 @@ public class TUserService implements IUserService{
 
     @EncodeUserPwd
     @Override
-    public boolean loginInfoCorrect(DtoWebUser webUser) {
+    public boolean loginInfoIsCorrect(DtoWebUser webUser) {
 
         String account = webUser.getAccount();
         String password = webUser.getPassword();
@@ -78,7 +78,7 @@ public class TUserService implements IUserService{
     }
 
     @Override
-    public String generateAndAddToken(DtoWebUser webUser) {
+    public String loginGetToken(DtoWebUser webUser) {
         Set<String> set = jedis.zrangeByScore(tokenProperty.getRedisKey(), webUser.getId(), webUser.getId());
 
         if(set.size() > 5) {
@@ -92,6 +92,11 @@ public class TUserService implements IUserService{
 
         return token;
     }
+
+	@Override
+	public void logout(Long userId, String userToken) {
+		jedis.zrem(tokenProperty.getRedisKey(), userToken);
+	}
 
 
 }

@@ -16,9 +16,6 @@ import javax.validation.Valid;
 public class LoginController {
 
 	@Autowired
-	PasswordEncoder passwordEncoder;
-
-	@Autowired
 	IUserService userService;
 
 	@ResponseStatus(HttpStatus.OK)
@@ -26,10 +23,11 @@ public class LoginController {
 	public String getToken(@RequestBody @Valid DtoWebUser user) throws AccountException {
 		DtoWebUser webUser = userService.findByAccountAndPassword(user);
 		if (webUser == null) {
-			throw new AccountNotFoundException("user info error");
+			String exceptionString = String.format("cannot find user {}", user.getAccount());
+			throw new AccountNotFoundException(exceptionString);
 		}
 
-		String token = userService.generateAndAddToken(webUser);
+		String token = userService.loginGetToken(webUser);
 
 		return token;
 	}
