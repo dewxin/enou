@@ -4,7 +4,6 @@ import fun.enou.alpha.dto.dtoweb.DtoWebUser;
 import fun.enou.alpha.service.IUserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
 import javax.security.auth.login.AccountException;

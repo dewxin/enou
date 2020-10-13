@@ -1,6 +1,5 @@
 package fun.enou.alpha.misc;
 
-import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -23,15 +22,15 @@ public class ControllerAdvisor {
     @ResponseBody
     @ExceptionHandler(value = AccountException.class)
     public ResponseEntity<String> AccountExceptionHandler(AccountException ex) {
-        HttpHeaders responseHeaders = new HttpHeaders();
-        responseHeaders.set("Enou-Result-Code",
-                "Client-Authorization-Error");
-        responseHeaders.set("Access-Control-Expose-Headers" ,//axios跨域请求需要设置 额外的header
-                "Enou-Result-Code");
+//        HttpHeaders responseHeaders = new HttpHeaders();
+//        responseHeaders.set("Enou-Result-Code",
+//                "Client-Authorization-Error");
+//        responseHeaders.set("Access-Control-Expose-Headers" ,//axios跨域请求需要设置 额外的header
+//                "Enou-Result-Code");
 
 
         return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
-                .headers(responseHeaders)
+//                .headers(responseHeaders)
                 .body(ex.getMessage());
     }
 

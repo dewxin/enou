@@ -42,10 +42,7 @@ public class LoginInterceptor implements HandlerInterceptor  {
 
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler)
             throws Exception {
-        if (request.getRequestURI().contains("/login") || request.getRequestURI().contains("/register") || request.getRequestURI().contains("/error") || request.getRequestURI().contains("/static")) {
-            return true;
-        }
-
+    	
         final String headerToken=request.getHeader(tokenProperty.getHeaderName());
         //判断请求信息
         if(null==headerToken||headerToken.trim().equals("")){
