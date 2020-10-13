@@ -4,6 +4,7 @@ import fun.enou.alpha.config.property.RedisProperty;
 import fun.enou.alpha.config.property.TokenProperty;
 import fun.enou.alpha.misc.SessionHolder;
 import fun.enou.alpha.misc.TokenManager;
+import fun.enou.core.IpUtils;
 import fun.enou.core.exception.account.AccountTokenException;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
@@ -42,6 +43,9 @@ public class LoginInterceptor implements HandlerInterceptor  {
 
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler)
             throws Exception {
+    	
+    	String remoteAddress = IpUtils.getIpAddr(request);
+    	sessionHolder.setRemoteAddress(remoteAddress);
     	
         final String headerToken=request.getHeader(tokenProperty.getHeaderName());
         //判断请求信息

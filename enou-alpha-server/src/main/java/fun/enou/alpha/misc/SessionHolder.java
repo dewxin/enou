@@ -12,13 +12,13 @@ import org.springframework.stereotype.Component;
 @Component
 public class SessionHolder {
 
-    ThreadLocal<Long> userIdLocal;
+    ThreadLocal<Long> userIdLocal = new ThreadLocal<>();
     
-    ThreadLocal<String> userTokenLocal;
+    ThreadLocal<String> userTokenLocal = new ThreadLocal<>();
+    
+    ThreadLocal<String> remoteAddressLocal = new ThreadLocal<>();
 
     public SessionHolder() {
-        userIdLocal = new ThreadLocal<>();
-        userTokenLocal = new ThreadLocal<>();
     }
 
     public Long getUserId() {
@@ -36,6 +36,14 @@ public class SessionHolder {
 
 	public void setUserToken(String userTokenLocal) {
 		this.userTokenLocal.set(userTokenLocal);
+	}
+	
+	public String getRemoteAddress() {
+		return remoteAddressLocal.get();
+	}
+
+	public void setRemoteAddress(String userTokenLocal) {
+		this.remoteAddressLocal.set(userTokenLocal);
 	}
     
 }
