@@ -47,10 +47,12 @@ public class LoginInterceptor implements HandlerInterceptor  {
     	String remoteAddress = IpUtils.getIpAddr(request);
     	sessionHolder.setRemoteAddress(remoteAddress);
     	
+    	String uri =request.getRequestURI();
+    	
         final String headerToken=request.getHeader(tokenProperty.getHeaderName());
         //判断请求信息
         if(null==headerToken||headerToken.trim().equals("")){
-            log.info("there is no token header");
+            log.info("there is no token header uri:{}", uri);
             throw new AccountTokenException("user has not log in");
         }
         //解析Token信息
