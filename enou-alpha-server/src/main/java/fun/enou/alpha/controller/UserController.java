@@ -3,6 +3,8 @@ package fun.enou.alpha.controller;
 import fun.enou.alpha.dto.dtoweb.DtoWebUser;
 import fun.enou.alpha.misc.SessionHolder;
 import fun.enou.alpha.service.IUserService;
+import fun.enou.core.msg.EnouMessageException;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
@@ -47,7 +49,7 @@ public class UserController {
 	
     @ResponseStatus(HttpStatus.OK)
     @PostMapping("/register")
-    public void registerUser(@RequestBody @Valid DtoWebUser user) throws AccountException {
+    public void registerUser(@RequestBody @Valid DtoWebUser user) throws EnouMessageException {
         userService.saveUser(user);
     }
     

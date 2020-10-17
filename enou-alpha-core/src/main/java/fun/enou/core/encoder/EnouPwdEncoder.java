@@ -1,4 +1,4 @@
-package fun.enou.core;
+package fun.enou.core.encoder;
 
 import org.springframework.security.crypto.password.PasswordEncoder;
 

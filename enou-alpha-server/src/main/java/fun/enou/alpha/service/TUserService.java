@@ -6,13 +6,15 @@ import fun.enou.alpha.dto.dtodb.DtoDbUser;
 import fun.enou.alpha.dto.dtoweb.DtoWebUser;
 import fun.enou.alpha.misc.TokenManager;
 import fun.enou.alpha.repository.UserRepository;
-import fun.enou.core.annotation.EncodeUserPwd;
-import fun.enou.core.aspect.PasswordEncodeAspect;
-import fun.enou.core.exception.account.AccountExistedException;
+import fun.enou.alpha.runner.MsgEnum;
+import fun.enou.core.encoder.EncodeUserPwd;
+import fun.enou.core.encoder.PasswordEncodeAspect;
+import fun.enou.core.msg.EnouMessageException;
+import fun.enou.core.msg.EnouMsgManager;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import redis.clients.jedis.Jedis;
-import javax.security.auth.login.AccountException;
 import java.util.Optional;
 import java.util.Set;
 
@@ -44,10 +46,10 @@ public class TUserService implements IUserService{
 
     @EncodeUserPwd
     @Override
-    public DtoWebUser saveUser(DtoWebUser webUser) throws AccountException {
+    public DtoWebUser saveUser(DtoWebUser webUser) throws EnouMessageException {
         DtoDbUser dbUser = webUser.toDtoDb();
         if(userRepository.existsByAccount(webUser.getAccount()))
-            throw new AccountExistedException(webUser.getAccount());
+            throw EnouMsgManager.getMsg(MsgEnum.ACCOUNT_EXIST);
 
         DtoDbUser savedUser = userRepository.save(dbUser);
         return savedUser.toDtoWeb();

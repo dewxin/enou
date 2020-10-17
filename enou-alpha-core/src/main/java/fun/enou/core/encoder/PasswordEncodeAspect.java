@@ -1,7 +1,5 @@
-package fun.enou.core.aspect;
+package fun.enou.core.encoder;
 
-import fun.enou.core.EnouPwdEncoder;
-import fun.enou.core.IHasPassword;
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
@@ -22,7 +20,8 @@ public class PasswordEncodeAspect {
     	passwordEncoder = new EnouPwdEncoder(salt);
 	}
 
-    @Around(value = "execution(* *.*(..)) && @annotation(fun.enou.core.annotation.EncodeUserPwd)")
+    //todo use wildcard
+    @Around(value = "execution(* *.*(..)) && @annotation(fun.enou.core.encoder.EncodeUserPwd)")
     public Object encodePassword(ProceedingJoinPoint joinPoint) throws Throwable {
 
         List<Object> oldArgsList = Arrays.asList(joinPoint.getArgs());

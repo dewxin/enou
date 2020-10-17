@@ -1,8 +1,7 @@
 package fun.enou.alpha.config;
 
 import fun.enou.alpha.config.property.RedisProperty;
-import fun.enou.core.aspect.PasswordEncodeAspect;
-
+import fun.enou.core.encoder.PasswordEncodeAspect;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.web.servlet.FilterRegistrationBean;

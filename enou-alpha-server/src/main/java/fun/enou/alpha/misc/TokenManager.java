@@ -1,7 +1,7 @@
 package fun.enou.alpha.misc;
 
 import fun.enou.alpha.config.property.TokenProperty;
-import fun.enou.core.TimeUtil;
+import fun.enou.core.tool.TimeUtil;
 import io.jsonwebtoken.JwtBuilder;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;

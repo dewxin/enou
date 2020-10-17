@@ -1,6 +1,4 @@
-package fun.enou.core.annotation;
-
-import fun.enou.core.IHasPassword;
+package fun.enou.core.encoder;
 
 import java.lang.annotation.*;
 

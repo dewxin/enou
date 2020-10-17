@@ -4,7 +4,6 @@ import fun.enou.alpha.dto.dtoweb.DtoWebUserWord;
 import fun.enou.alpha.misc.SessionHolder;
 import fun.enou.alpha.service.IUserWordService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.repository.query.Param;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
@@ -41,11 +40,8 @@ public class WordController {
 
     @GetMapping
     @ResponseStatus(HttpStatus.OK)
-    public List<DtoWebUserWord> getWordAfter(@Param("time") Long time) {
-        if(time == null) {
-            time = 0L;
-            log.info("userId {} getWordAfter timeStamp is null", sessionHolder.getUserId());
-        }
+    public List<DtoWebUserWord> getWordAfter(
+    		@RequestParam(value="time", defaultValue = "0") Long time) {
         return userWordService.getAllWordsAfter(time);
     }
 

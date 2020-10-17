@@ -1,4 +1,4 @@
-package fun.enou.core;
+package fun.enou.core.tool;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -8,10 +8,10 @@ import org.slf4j.LoggerFactory;
 import java.net.*;
 import java.util.Enumeration;
 
-public class IpUtils {
+public class IpUtil {
     private static final String LOCAL_IP = "127.0.0.1";
     
-    private static final Logger log = LoggerFactory.getLogger(IpUtils.class);  
+    private static final Logger log = LoggerFactory.getLogger(IpUtil.class);  
 
     public static String getIpAddr(HttpServletRequest request) {
         if (request == null) {

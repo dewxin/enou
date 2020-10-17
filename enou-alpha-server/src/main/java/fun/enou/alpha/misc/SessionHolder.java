@@ -1,6 +1,10 @@
 package fun.enou.alpha.misc;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.autoconfigure.data.redis.RedisProperties.Jedis;
 import org.springframework.stereotype.Component;
+
+import fun.enou.alpha.config.property.RedisProperty;
 
 /**
  * @Author: nagi
@@ -11,6 +15,11 @@ import org.springframework.stereotype.Component;
  */
 @Component
 public class SessionHolder {
+	
+	@Autowired
+	RedisProperty redisProperty;
+	
+	ThreadLocal<Jedis> jedisLocal = new ThreadLocal<>();
 
     ThreadLocal<Long> userIdLocal = new ThreadLocal<>();
     

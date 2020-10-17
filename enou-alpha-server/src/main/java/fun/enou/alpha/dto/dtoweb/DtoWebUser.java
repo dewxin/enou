@@ -1,7 +1,8 @@
 package fun.enou.alpha.dto.dtoweb;
 
 import fun.enou.alpha.dto.dtodb.DtoDbUser;
-import fun.enou.core.IHasPassword;
+import fun.enou.core.encoder.IHasPassword;
+
 import org.hibernate.validator.constraints.Length;
 
 import javax.validation.constraints.NotNull;

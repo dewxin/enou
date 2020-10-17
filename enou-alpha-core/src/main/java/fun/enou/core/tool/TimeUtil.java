@@ -1,4 +1,4 @@
-package fun.enou.core;
+package fun.enou.core.tool;
 
 import java.util.Date;
 

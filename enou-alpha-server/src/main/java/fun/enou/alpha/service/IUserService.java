@@ -2,11 +2,11 @@ package fun.enou.alpha.service;
 
 
 import fun.enou.alpha.dto.dtoweb.DtoWebUser;
+import fun.enou.core.msg.EnouMessageException;
 
-import javax.security.auth.login.AccountException;
 
 public interface IUserService {
-    DtoWebUser saveUser(DtoWebUser webUser) throws AccountException;
+    DtoWebUser saveUser(DtoWebUser webUser) throws EnouMessageException;
 
     boolean loginInfoIsCorrect(DtoWebUser webUser);
 
