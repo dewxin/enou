@@ -4,24 +4,21 @@ import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
 @Aspect
-@Component
-public class PasswordEncodeAspect {
+public class EncodeUserPwdAspect {
 
-    PasswordEncoder passwordEncoder;
+    private PasswordEncoder passwordEncoder;
     
-    public PasswordEncodeAspect(String salt) {
+    public EncodeUserPwdAspect(String salt) {
     	passwordEncoder = new EnouPwdEncoder(salt);
 	}
 
-    //todo use wildcard
-    @Around(value = "execution(* *.*(..)) && @annotation(fun.enou.core.encoder.EncodeUserPwd)")
+    @Around(value = "execution(* *.*(..)) && @annotation(EncodeUserPwd)")
     public Object encodePassword(ProceedingJoinPoint joinPoint) throws Throwable {
 
         List<Object> oldArgsList = Arrays.asList(joinPoint.getArgs());

@@ -1,5 +1,7 @@
-package fun.enou.alpha.runner;
+package fun.enou.alpha.msg;
 
+import fun.enou.core.msg.EnouMessageException;
+import fun.enou.core.msg.EnouMsgManager;
 import fun.enou.core.msg.ICodeEnum;
 
 public enum MsgEnum implements ICodeEnum{
@@ -12,22 +14,22 @@ public enum MsgEnum implements ICodeEnum{
 	TOKEN_NOT_PUT_IN_REDIS(10005),
 	
 	ACCOUNT_EXIST(10101),
+	ACCOUNT_OR_PWD_WRONG(10102),
 	;
 	private Integer code;
 	
 	
+	public EnouMessageException Exception() {
+		return EnouMsgManager.getMsg(this);
+	}
 	
 	public Integer getCode() {
 		return code;
 	}
 
-
-
 	public void setCode(Integer code) {
 		this.code = code;
 	}
-
-
 
 	private MsgEnum(int code) {
 		this.code = code;

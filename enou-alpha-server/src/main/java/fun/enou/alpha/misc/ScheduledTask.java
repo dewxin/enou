@@ -12,7 +12,6 @@ import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 import redis.clients.jedis.Jedis;
 
-import java.time.LocalTime;
 import java.util.Set;
 
 /**
@@ -40,22 +39,22 @@ public class ScheduledTask {
     }
 
     //@Scheduled(cron = "* * * * * ?")
-    public void insertExpiredToken() {
-        long userPerHour = 100 * 3600;
-        long userPerMinute = 100 * 60;
-
-        LocalTime now = LocalTime.now();
-        log.info("enter insertExpired");
-
-        long start = now.getHour()* userPerHour+ now.getMinute() * userPerMinute;
-        long end = start + userPerMinute;
-
-        for(long i = start; i < end; ++i) {
-            String token = tokenManager.generateToken(i, 0);
-            jedis.zadd(tokenProperty.getRedisKey(), i, token);
-        }
-
-    }
+//    public void insertExpiredToken() {
+//        long userPerHour = 100 * 3600;
+//        long userPerMinute = 100 * 60;
+//
+//        LocalTime now = LocalTime.now();
+//        log.info("enter insertExpired");
+//
+//        long start = now.getHour()* userPerHour+ now.getMinute() * userPerMinute;
+//        long end = start + userPerMinute;
+//
+//        for(long i = start; i < end; ++i) {
+//            String token = tokenManager.generateToken(i, 0);
+//            jedis.zadd(tokenProperty.getRedisKey(), i, token);
+//        }
+//
+//    }
 
 
     // scheduling thread will block until

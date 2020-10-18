@@ -3,8 +3,12 @@ package fun.enou.alpha.controller;
 import fun.enou.alpha.dto.dtoweb.DtoWebUserWord;
 import fun.enou.alpha.misc.SessionHolder;
 import fun.enou.alpha.service.IUserWordService;
+import fun.enou.core.msg.AutoResponseMsg;
+import fun.enou.core.msg.EnouMsgJson;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import lombok.extern.slf4j.Slf4j;
@@ -21,7 +25,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/word")
-@Slf4j
+@AutoResponseMsg
 public class WordController {
 
     @Autowired
@@ -31,22 +35,21 @@ public class WordController {
     SessionHolder sessionHolder;
 
     @PostMapping
-    @ResponseStatus(HttpStatus.OK)
-    public DtoWebUserWord saveWord(@RequestBody @Valid DtoWebUserWord webUserWord) {
+    public Object saveWord(@RequestBody @Valid DtoWebUserWord webUserWord) {
         String word = webUserWord.getWord().toLowerCase();
         webUserWord.setWord(word);
-        return userWordService.saveWord(webUserWord);
+        
+        DtoWebUserWord retWord = userWordService.saveWord(webUserWord);
+        return retWord;
     }
 
     @GetMapping
-    @ResponseStatus(HttpStatus.OK)
-    public List<DtoWebUserWord> getWordAfter(
+    public Object getWordAfter(
     		@RequestParam(value="time", defaultValue = "0") Long time) {
         return userWordService.getAllWordsAfter(time);
     }
 
-    @PutMapping()
-    @ResponseStatus(HttpStatus.OK)
+    @PutMapping
     public void modifyWord(@RequestBody @Valid DtoWebUserWord webUserWord) {
         userWordService.updateWord(webUserWord);
     }

@@ -1,10 +1,12 @@
 package fun.enou.alpha.misc;
 
+import java.util.function.Supplier;
+
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.autoconfigure.data.redis.RedisProperties.Jedis;
 import org.springframework.stereotype.Component;
 
 import fun.enou.alpha.config.property.RedisProperty;
+import redis.clients.jedis.Jedis;
 
 /**
  * @Author: nagi
@@ -16,10 +18,7 @@ import fun.enou.alpha.config.property.RedisProperty;
 @Component
 public class SessionHolder {
 	
-	@Autowired
-	RedisProperty redisProperty;
-	
-	ThreadLocal<Jedis> jedisLocal = new ThreadLocal<>();
+	ThreadLocal<Jedis> jedisLocal;
 
     ThreadLocal<Long> userIdLocal = new ThreadLocal<>();
     
@@ -27,7 +26,14 @@ public class SessionHolder {
     
     ThreadLocal<String> remoteAddressLocal = new ThreadLocal<>();
 
-    public SessionHolder() {
+    @Autowired
+    public SessionHolder(RedisProperty redisProperty) {
+    	jedisLocal = ThreadLocal.withInitial(new Supplier<Jedis>() {
+    		@Override
+    		public Jedis get() {
+    			return new Jedis(redisProperty.getHost());
+    		}
+    	});
     }
 
     public Long getUserId() {
@@ -53,6 +59,10 @@ public class SessionHolder {
 
 	public void setRemoteAddress(String userTokenLocal) {
 		this.remoteAddressLocal.set(userTokenLocal);
+	}
+
+	public Jedis getJedisLocal() {
+		return jedisLocal.get();
 	}
     
 }

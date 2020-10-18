@@ -2,19 +2,24 @@ package fun.enou.alpha.controller;
 
 import fun.enou.alpha.dto.dtoweb.DtoWebUser;
 import fun.enou.alpha.misc.SessionHolder;
+import fun.enou.alpha.msg.MsgEnum;
 import fun.enou.alpha.service.IUserService;
+import fun.enou.core.msg.AutoResponseMsg;
 import fun.enou.core.msg.EnouMessageException;
+import fun.enou.core.msg.EnouMsgJson;
+import lombok.extern.slf4j.Slf4j;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import javax.security.auth.login.AccountException;
-import javax.security.auth.login.AccountNotFoundException;
 import javax.validation.Valid;
 
+@Slf4j
 @RestController
 @RequestMapping
+@AutoResponseMsg
 public class UserController {
 
 	@Autowired
@@ -23,23 +28,19 @@ public class UserController {
     @Autowired
     SessionHolder sessionHolder;
 
-	@ResponseStatus(HttpStatus.OK)
 	@PostMapping("/login")
-	public String getToken(@RequestBody @Valid DtoWebUser user) throws AccountException {
+	public Object getToken(@RequestBody @Valid DtoWebUser user) throws EnouMessageException {
 		DtoWebUser webUser = userService.findByAccountAndPassword(user);
 		if (webUser == null) {
-			String exceptionString = String.format("cannot find user {}", user.getAccount());
-			throw new AccountNotFoundException(exceptionString);
+			log.warn("account or pwd is wrong, user:{}", user.getAccount());
+			throw MsgEnum.ACCOUNT_OR_PWD_WRONG.Exception();
 		}
 
-		String token = userService.loginGetToken(webUser);
-
-		return token;
+		return userService.loginGetToken(webUser);
 	}
 	
-	@ResponseStatus(HttpStatus.OK)
 	@PostMapping("/logout")
-	public void logout() throws AccountException {
+	public void logout(){
 		
 		Long userId = sessionHolder.getUserId();
 		String userToken  = sessionHolder.getUserToken();
@@ -47,15 +48,13 @@ public class UserController {
 		userService.logout(userId, userToken);
 	}
 	
-    @ResponseStatus(HttpStatus.OK)
     @PostMapping("/register")
     public void registerUser(@RequestBody @Valid DtoWebUser user) throws EnouMessageException {
         userService.saveUser(user);
     }
     
-    @ResponseStatus(HttpStatus.OK)
     @GetMapping("/token/check")
-    public void checkToken() throws AccountException {
+    public void checkToken(){
     	// It's done in the intercepter.
     }
     

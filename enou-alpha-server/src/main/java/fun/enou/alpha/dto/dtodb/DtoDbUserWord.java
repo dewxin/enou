@@ -12,7 +12,6 @@ import java.sql.Timestamp;
  * @Modified By:
  * @Date Created in 2020-09-22 18:10
  * @Description:
- * @Attention:  todo index could be better.
  */
 
 @Table("user_word")

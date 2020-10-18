@@ -2,6 +2,8 @@ package fun.enou.alpha.controller;
 
 import fun.enou.alpha.dto.dtoweb.DtoWebArticle;
 import fun.enou.alpha.service.IArticleService;
+import fun.enou.core.msg.AutoResponseMsg;
+
 import org.springframework.beans.factory.annotation.Autowired;
 
 import org.springframework.http.HttpStatus;
@@ -12,6 +14,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/article")
+@AutoResponseMsg
 public class ArticleController {
     @Autowired
     IArticleService articleService;
@@ -28,7 +31,7 @@ public class ArticleController {
 
     //todo return value too huge, need to reduce
     @GetMapping
-    public List<DtoWebArticle> getArticle() {
+    public Object getArticle() {
 
         List<DtoWebArticle> articles = articleService.getArticles(0, 10);
         return articles;

@@ -1,7 +1,7 @@
 package fun.enou.alpha.config;
 
 import fun.enou.alpha.interceptor.LoginInterceptor;
-import fun.enou.alpha.misc.BaseExceptionHandler;
+import fun.enou.alpha.misc.ServletExceptionHandler;
 
 import java.util.List;
 
@@ -39,6 +39,6 @@ public class WebConfig implements WebMvcConfigurer {
     
     @Override
     public void extendHandlerExceptionResolvers(List<HandlerExceptionResolver> exceptionResolvers) {
-    	exceptionResolvers.add(0, new BaseExceptionHandler());
+    	exceptionResolvers.add(0, new ServletExceptionHandler());
     }
 }

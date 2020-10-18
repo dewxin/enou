@@ -1,4 +1,4 @@
-package fun.enou.alpha.runner;
+package fun.enou.alpha.msg;
 
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.stereotype.Component;

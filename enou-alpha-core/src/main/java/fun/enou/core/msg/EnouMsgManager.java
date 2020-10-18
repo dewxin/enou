@@ -3,13 +3,17 @@ package fun.enou.core.msg;
 import java.text.MessageFormat;
 import java.util.concurrent.ConcurrentHashMap;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+
 public class EnouMsgManager {
 	
 	private static ConcurrentHashMap<Integer, EnouMessageException> code2MsgMap = new ConcurrentHashMap<>();
 	
 	public static void registerMessage(Integer code, String msg) {
-		if(code2MsgMap.contains(code)) {
-			String info = MessageFormat.format("{} code has registered", code);
+		if(code2MsgMap.containsKey(code)) {
+			String info = MessageFormat.format("code {0} has registered", code);
 			throw new Error(info);
 		}
 		
