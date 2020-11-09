@@ -1,8 +1,6 @@
-package fun.enou.alpha.interceptor;
+package fun.enou.alpha.misc;
 
 import fun.enou.alpha.config.property.TokenProperty;
-import fun.enou.alpha.misc.SessionHolder;
-import fun.enou.alpha.misc.TokenManager;
 import fun.enou.alpha.msg.MsgEnum;
 import fun.enou.core.msg.EnouMessageException;
 import fun.enou.core.tool.IpUtil;
@@ -11,6 +9,7 @@ import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.JwtException;
 import io.jsonwebtoken.Jwts;
 import lombok.extern.slf4j.Slf4j;
+import redis.clients.jedis.Jedis;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.lang.Nullable;
@@ -34,7 +33,10 @@ public class LoginInterceptor implements HandlerInterceptor  {
     SessionHolder sessionHolder;
 
     @Autowired
-    TokenManager tokenManager;
+    LoginTokenManager tokenManager;
+    
+    @Autowired
+    RedisManager redisManager;
 
     public LoginInterceptor() {
     }
@@ -50,38 +52,43 @@ public class LoginInterceptor implements HandlerInterceptor  {
         final String headerToken=request.getHeader(tokenProperty.getHeaderName());
         if(null==headerToken||headerToken.trim().equals("")){
             log.warn("no token header, remoteIp:{} uri:{} ", remoteIp, uri);
-            throw MsgEnum.HEADER_NOT_CONTAIN_TOKEN.Exception();
+            MsgEnum.HEADER_NOT_CONTAIN_TOKEN.ThrowException();
         }
         try {
-            Claims claims = Jwts.parser().setSigningKey(tokenManager.SECRET_KEY).parseClaimsJws(headerToken).getBody();
+            Claims claims = Jwts.parser()
+            		.setSigningKey(tokenManager.SECRET_KEY).parseClaimsJws(headerToken).getBody();
             String userIdStr=(String)claims.get(tokenManager.USER_ID);
             long userId = Long.parseLong(userIdStr);
 
-            Set<String> tokenSet = sessionHolder.getJedisLocal().zrangeByScore(tokenProperty.getRedisKey(), userIdStr, userIdStr);
-
-            if(!tokenSet.contains(headerToken)) {
+            String token = redisManager.getToken(userId);
+            
+            if(token == null) {
                 log.warn("cannot find token in redis, userId:{}", userId);
-                throw MsgEnum.TOKEN_NOT_PUT_IN_REDIS.Exception();
+                MsgEnum.TOKEN_NOT_PUT_IN_REDIS.ThrowException();
             }
 
-            sessionHolder.setUserIdLocal(userId);
-            sessionHolder.setUserToken(headerToken);
+            if(!headerToken.contains(token)){
+            	log.warn("client token not match redis token");
+            	MsgEnum.TOKEN_NOT_MATCH_REDIS.ThrowException();
+            }
+
+            sessionHolder.setUserId(userId);
         }
         catch (EnouMessageException e) {
             throw  e;
         }
         catch (ExpiredJwtException e) {
         	log.warn("token expired, message:{} remoteIp:{} token:{}", e.getMessage(), remoteIp, headerToken);
-        	throw MsgEnum.TOKEN_EXPIRED.Exception();
+        	MsgEnum.TOKEN_EXPIRED.ThrowException();
 		}
         catch (JwtException e) {
         	log.warn("parse token fail, message:{} remoteIp:{} token:{}", e.getMessage(), remoteIp, headerToken);
-        	throw MsgEnum.PARSE_TOKEN_FAIL.Exception();
+        	MsgEnum.PARSE_TOKEN_FAIL.ThrowException();
 		}
         catch (Exception e) {
         	log.warn(e.getMessage());
         	log.warn(e.getStackTrace().toString());
-        	throw MsgEnum.UNKOWN_ERROR_PARSING_TOKEN.Exception();
+        	MsgEnum.OTHER_ERROR_PARSING_TOKEN.ThrowException();
         }
 
         log.debug("id {} user parse token succeed", sessionHolder.getUserId());
@@ -93,6 +100,7 @@ public class LoginInterceptor implements HandlerInterceptor  {
 
     public void postHandle(HttpServletRequest request, HttpServletResponse response, Object handler,
                             @Nullable ModelAndView modelAndView) throws Exception {
+    	
     }
 
 

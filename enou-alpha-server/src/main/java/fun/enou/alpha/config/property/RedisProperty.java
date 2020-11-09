@@ -2,6 +2,10 @@ package fun.enou.alpha.config.property;
 
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.web.bind.annotation.GetMapping;
+
+import redis.clients.jedis.Jedis;
+import redis.clients.jedis.JedisPool;
 
 /**
  * @Author: nagi
@@ -13,9 +17,9 @@ import org.springframework.context.annotation.Configuration;
 @Configuration
 @ConfigurationProperties(prefix = "enou.redis")
 public class RedisProperty {
-    //todo enable protect mode on the remote server
 
     private String host;
+    private String authPass;
 
     public String getHost() {
         return host;
@@ -24,4 +28,13 @@ public class RedisProperty {
     public void setHost(String host) {
         this.host = host;
     }
+
+	public String getAuthPass() {
+		return authPass;
+	}
+
+	public void setAuthPass(String authPass) {
+		this.authPass = authPass;
+	}
+    
 }

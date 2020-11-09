@@ -14,5 +14,5 @@ public interface IUserService {
 
     String loginGetToken(DtoWebUser webUser);
     
-    void logout(Long userId, String userToken);
+    void logout();
 }

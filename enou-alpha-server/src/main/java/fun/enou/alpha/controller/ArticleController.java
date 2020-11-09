@@ -22,6 +22,10 @@ public class ArticleController {
     ///  todo token logic  multi database, put the user logic in a single database.
     // https://blog.csdn.net/qq_37345604/article/details/89377105#comments
 
+    /**
+     * 
+     * @param article
+     */
     @ResponseStatus(HttpStatus.CREATED)
     @PostMapping
     public void uploadArticle(@RequestBody @Valid DtoWebArticle article) {

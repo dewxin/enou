@@ -20,7 +20,7 @@ public class DtoWebUserWord {
 
     @NotNull
     @Length(max = 60, message = "word is too long")
-    @Pattern(regexp ="[a-zA-Z ]+")
+    @Pattern(regexp ="[a-zA-Z \\-]+")
     private String word;
 
     public DtoWebUserWord() {

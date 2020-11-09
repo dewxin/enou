@@ -26,6 +26,13 @@
   {
     "name": "enou.redis.host",
     "type": "java.lang.String",
+	"sourceType": "fun.enou.alpha.config.property.RedisProperty",
     "description": "A description for 'enou.redis.host'"
+  },
+  {
+    "name": "enou.redis.auth-pass",
+    "type": "java.lang.String",
+	"sourceType": "fun.enou.alpha.config.property.RedisProperty",
+    "description": "A description for 'enou.redis.auth-pass'"
   }
 ]}

@@ -1,6 +1,6 @@
 package fun.enou.alpha.config;
 
-import fun.enou.alpha.interceptor.LoginInterceptor;
+import fun.enou.alpha.misc.LoginInterceptor;
 import fun.enou.alpha.misc.ServletExceptionHandler;
 
 import java.util.List;

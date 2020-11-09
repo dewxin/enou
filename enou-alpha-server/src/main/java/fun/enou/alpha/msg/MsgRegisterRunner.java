@@ -13,7 +13,6 @@ public class MsgRegisterRunner implements CommandLineRunner{
 		for(MsgEnum msg : MsgEnum.values()) {
 			EnouMsgManager.registerMessage(msg.getCode(), msg.toString());
 		}
-		
 	}
 
 }

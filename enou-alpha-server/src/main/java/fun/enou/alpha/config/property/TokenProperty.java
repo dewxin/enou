@@ -17,8 +17,6 @@ public class TokenProperty {
     private String headerName = "token";
     private String secretKey = "enou$Token$";
 
-    private String redisKey = "userToken";
-    private int durationHour = 168;
 
     public String getHeaderName() {
         return headerName;
@@ -36,19 +34,5 @@ public class TokenProperty {
         this.secretKey = secretKey;
     }
 
-    public String getRedisKey() {
-        return redisKey;
-    }
-
-    public void setRedisKey(String redisKey) {
-        this.redisKey = redisKey;
-    }
-    public int getDurationHour() {
-        return durationHour;
-    }
-
-    public void setDurationHour(int durationHour) {
-        this.durationHour = durationHour;
-    }
 
 }

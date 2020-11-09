@@ -1,20 +1,20 @@
 package fun.enou.alpha.service;
 
-import fun.enou.alpha.config.property.TokenProperty;
 import fun.enou.alpha.dto.dtodb.DtoDbUser;
 import fun.enou.alpha.dto.dtoweb.DtoWebUser;
 import fun.enou.alpha.misc.SessionHolder;
-import fun.enou.alpha.misc.TokenManager;
+import fun.enou.alpha.misc.LoginTokenManager;
+import fun.enou.alpha.misc.RedisManager;
 import fun.enou.alpha.msg.MsgEnum;
 import fun.enou.alpha.repository.UserRepository;
 import fun.enou.core.encoder.EncodeUserPwd;
 import fun.enou.core.encoder.EncodeUserPwdAspect;
 import fun.enou.core.msg.EnouMessageException;
+import redis.clients.jedis.Jedis;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import java.util.Optional;
-import java.util.Set;
 
 
 /**
@@ -32,12 +32,12 @@ public class TUserService implements IUserService{
 	@Autowired
 	private SessionHolder sessionHolder;
     @Autowired
-    private TokenProperty tokenProperty;
-    @Autowired
-    private TokenManager tokenGenerator;
+    private LoginTokenManager tokenGenerator;
     @Autowired
     private UserRepository userRepository;
 
+    @Autowired
+    private RedisManager redisManager;
 
     public TUserService() {
     }
@@ -47,7 +47,7 @@ public class TUserService implements IUserService{
     public DtoWebUser saveUser(DtoWebUser webUser) throws EnouMessageException {
         DtoDbUser dbUser = webUser.toDtoDb();
         if(userRepository.existsByAccount(webUser.getAccount()))
-        	throw MsgEnum.ACCOUNT_EXIST.Exception();
+        	MsgEnum.ACCOUNT_EXIST.ThrowException();
 
         DtoDbUser savedUser = userRepository.save(dbUser);
         return savedUser.toDtoWeb();
@@ -79,22 +79,29 @@ public class TUserService implements IUserService{
 
     @Override
     public String loginGetToken(DtoWebUser webUser) {
-        Set<String> set = sessionHolder.getJedisLocal().zrangeByScore(tokenProperty.getRedisKey(), webUser.getId(), webUser.getId());
 
-        if(set.size() >= 5) {
-            String[] tokenArray = set.toArray(new String[]{});
-            return tokenArray[0];
-        }
-
-        String token = tokenGenerator.generateToken(webUser.getId(), 24 * 7);
-        sessionHolder.getJedisLocal().zadd(tokenProperty.getRedisKey(), webUser.getId(), token);
-
-        return token;
+    	String userTokenKey = redisManager.getUserTokenKey(webUser.getId());
+    	int timeOutSecond = 3600 * 24 * 30;
+    	
+    	try (Jedis jedis = redisManager.getJedis()) {
+        	String token = jedis.get(userTokenKey);
+        	if(token != null) {
+        		jedis.expire(userTokenKey, timeOutSecond);
+        	} else {
+        		token = tokenGenerator.generateToken(webUser.getId());
+        		jedis.setex(userTokenKey, timeOutSecond,token);
+    		}
+        	
+        	return token;
+    	}
     }
 
 	@Override
-	public void logout(Long userId, String userToken) {
-		sessionHolder.getJedisLocal().zrem(tokenProperty.getRedisKey(), userToken);
+	public void logout() {
+//		Long userId = sessionHolder.getUserId();
+//		try(Jedis jedis = redisManager.getJedis()) {
+//			jedis.del("token:uid:"+userId);
+//		}
 	}
 
 

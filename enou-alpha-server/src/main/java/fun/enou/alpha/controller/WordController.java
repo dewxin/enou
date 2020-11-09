@@ -4,17 +4,11 @@ import fun.enou.alpha.dto.dtoweb.DtoWebUserWord;
 import fun.enou.alpha.misc.SessionHolder;
 import fun.enou.alpha.service.IUserWordService;
 import fun.enou.core.msg.AutoResponseMsg;
-import fun.enou.core.msg.EnouMsgJson;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import lombok.extern.slf4j.Slf4j;
-
 import javax.validation.Valid;
-import java.util.List;
 
 /**
  * @author: nagi
@@ -34,6 +28,11 @@ public class WordController {
     @Autowired
     SessionHolder sessionHolder;
 
+    /**
+     * 上传单词
+     * @param webUserWord
+     * @return 
+     */
     @PostMapping
     public Object saveWord(@RequestBody @Valid DtoWebUserWord webUserWord) {
         String word = webUserWord.getWord().toLowerCase();
@@ -43,12 +42,21 @@ public class WordController {
         return retWord;
     }
 
+    /**
+     * 获取 unix时间戳之后 学习的所有单词
+     * @param time unix时间戳，不传默认为0
+     * @return 返回单词
+     */
     @GetMapping
     public Object getWordAfter(
     		@RequestParam(value="time", defaultValue = "0") Long time) {
         return userWordService.getAllWordsAfter(time);
     }
 
+    /**
+     * 更新单词, 因为pc端识图不一定准确
+     * @param webUserWord
+     */
     @PutMapping
     public void modifyWord(@RequestBody @Valid DtoWebUserWord webUserWord) {
         userWordService.updateWord(webUserWord);

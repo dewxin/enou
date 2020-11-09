@@ -1,7 +1,6 @@
 package fun.enou.alpha.misc;
 
 import fun.enou.alpha.config.property.TokenProperty;
-import fun.enou.core.tool.TimeUtil;
 import io.jsonwebtoken.JwtBuilder;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
@@ -9,7 +8,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.DependsOn;
 import org.springframework.stereotype.Component;
 
-import java.util.Date;
 
 /**
  * @Author: nagi
@@ -21,25 +19,20 @@ import java.util.Date;
 
 @DependsOn("tokenProperty")
 @Component
-public class TokenManager {
+public class LoginTokenManager {
 
     public final String SECRET_KEY ;
     public final String USER_ID = "userId";
 
     @Autowired
-    public TokenManager(TokenProperty tokenProperty) {
+    public LoginTokenManager(TokenProperty tokenProperty) {
         SECRET_KEY = tokenProperty.getSecretKey();
     }
 
-    public String generateToken(Long userId, int durationHour) {
-        Date date = new Date();
-
+    public String generateToken(Long userId) {
         SignatureAlgorithm signatureAlgorithm = SignatureAlgorithm.HS256;
-        JwtBuilder builder = Jwts.builder().setHeaderParam("typ", "JWT") // 设置header
-                .setHeaderParam("alg", "HS256")
-                .setExpiration(TimeUtil.dateAddHour(date, durationHour))
+        JwtBuilder builder = Jwts.builder()
                 .claim(USER_ID,String.valueOf(userId) ) // 设置内容
-                .setIssuer("enou")// 设置签发人
                 .signWith(signatureAlgorithm, SECRET_KEY);
 
         return builder.compact();

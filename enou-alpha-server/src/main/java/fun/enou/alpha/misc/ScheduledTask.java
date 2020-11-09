@@ -31,11 +31,12 @@ public class ScheduledTask {
     TokenProperty tokenProperty;
 
     @Autowired
-    TokenManager tokenManager;
+    LoginTokenManager tokenManager;
 
     @Autowired
     public ScheduledTask(RedisProperty redisProperty) {
         this.jedis = new Jedis(redisProperty.getHost());
+        jedis.auth(redisProperty.getAuthPass());
     }
 
     //@Scheduled(cron = "* * * * * ?")
@@ -57,22 +58,23 @@ public class ScheduledTask {
 //    }
 
 
-    // scheduling thread will block until
-    @Scheduled(cron = "0 0 0 * * ?")
-    public void cleanExpiredToken() {
-        Set<String> tokenSet = jedis.zrangeByScore(tokenProperty.getRedisKey(), Double.NEGATIVE_INFINITY, Double.POSITIVE_INFINITY);
-
-        log.info("enter cleanExpire");
-
-        for (String token : tokenSet) {
-            try{
-                Jws<Claims> jws = Jwts.parser().setSigningKey(tokenProperty.getSecretKey()).parseClaimsJws(token);
-            }
-            catch (ExpiredJwtException e) {
-                jedis.zrem(tokenProperty.getRedisKey(), token);
-            }
-
-        }
-
-    }
+    // scheduling thread will block untio
+    // remove this after completing nadis
+//    @Scheduled(cron = "0 0 0 * * ?")
+//    public void cleanExpiredToken() {
+//        Set<String> tokenSet = jedis.zrangeByScore(tokenProperty.getRedisKey(), Double.NEGATIVE_INFINITY, Double.POSITIVE_INFINITY);
+//
+//        log.info("enter cleanExpire");
+//
+//        for (String token : tokenSet) {
+//            try{
+//                Jws<Claims> jws = Jwts.parser().setSigningKey(tokenProperty.getSecretKey()).parseClaimsJws(token);
+//            }
+//            catch (ExpiredJwtException e) {
+//                jedis.zrem(tokenProperty.getRedisKey(), token);
+//            }
+//
+//        }
+//
+//    }
 }
