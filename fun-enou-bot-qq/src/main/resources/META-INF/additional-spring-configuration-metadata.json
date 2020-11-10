@@ -1,0 +1,14 @@
+{"properties": [
+  {
+    "name": "enou.bot.account",
+    "type": "java.lang.String",
+	"sourceType": "fun.enou.bot.qq.bot.config",
+    "description": "A description for 'enou.bot.account'"
+  },
+  {
+    "name": "enou.bot.password",
+    "type": "java.lang.String",
+	"sourceType": "fun.enou.bot.qq.bot.config",
+    "description": "A description for 'enou.bot.password'"
+  }
+]}
