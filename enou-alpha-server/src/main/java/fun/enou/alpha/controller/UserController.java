@@ -1,6 +1,7 @@
 package fun.enou.alpha.controller;
 
 import fun.enou.alpha.dto.dtoweb.DtoWebUser;
+import fun.enou.alpha.dto.dtoweb.DtoWebUserThirdInfo;
 import fun.enou.alpha.misc.SessionHolder;
 import fun.enou.alpha.msg.MsgEnum;
 import fun.enou.alpha.service.IUserService;
@@ -67,6 +68,16 @@ public class UserController {
     @GetMapping("/token/check")
     public void checkToken(){
     	// It's done in the intercepter.
+    }
+    
+    @PostMapping("/third/info")
+    public void updateThirdInfo(@RequestBody @Valid DtoWebUserThirdInfo thirdInfo) throws EnouMessageException {
+    	userService.saveUserThirdInfo(thirdInfo);
+    }
+    
+    @GetMapping("/third/info/{thirdParty}")
+    public Object getThirdInfo(@PathVariable("thirdParty") String thirdParty) {
+    	return userService.getUserThirdInfo(thirdParty);
     }
     
 }

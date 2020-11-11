@@ -16,4 +16,6 @@ public interface IUserWordService {
      DtoWebUserWord saveWord(DtoWebUserWord webUserWord);
      DtoWebUserWord updateWord(DtoWebUserWord webUserWord);
      List<DtoWebUserWord> getAllWordsAfter(Long timeStamp);
+     
+     String getOneRandomWord();
 }

@@ -24,6 +24,7 @@ public class WebConfig implements WebMvcConfigurer {
     		"/register",
     		"/login",
     		"/static",
+    		"/word/random"
     };
     
     @Override

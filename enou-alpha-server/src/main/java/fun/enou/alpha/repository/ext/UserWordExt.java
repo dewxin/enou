@@ -13,4 +13,6 @@ import fun.enou.alpha.dto.dtodb.DtoDbUserWord;
 
 public interface UserWordExt {
     void update(DtoDbUserWord dbUserWord);
+    
+    DtoDbUserWord findOneRandom();
 }

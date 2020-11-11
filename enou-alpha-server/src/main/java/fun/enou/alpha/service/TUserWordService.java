@@ -56,4 +56,9 @@ public class TUserWordService implements IUserWordService{
 
         return dbWordList.stream().map(DtoDbUserWord::toDtoWeb).collect(Collectors.toList());
     }
+
+	@Override
+	public String getOneRandomWord() {
+		return wordRepository.findOneRandom().getWord();
+	}
 }

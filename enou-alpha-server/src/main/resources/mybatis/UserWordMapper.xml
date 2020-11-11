@@ -5,8 +5,14 @@
 
 <mapper namespace="fun.enou.alpha.repository.ext.UserWordExt">
     <update id="update" parameterType="fun.enou.alpha.dto.dtodb.DtoDbUserWord">
-    update user_word set
-        word = #{word}
-    where id = #{id}
+		update user_word set
+			word = #{word}
+		where id = #{id};
     </update>
+    
+    <select id="findOneRandom" resultType="fun.enou.alpha.dto.dtodb.DtoDbUserWord">
+		select  max(id)*rand() from user_word into @min;
+		select * from user_word where id >= @min limit 1;
+    </select>
+
 </mapper>

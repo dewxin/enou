@@ -1,7 +1,7 @@
 package fun.enou.alpha.misc;
 
-import fun.enou.alpha.config.property.RedisProperty;
 import fun.enou.alpha.config.property.TokenProperty;
+import fun.enou.core.redis.RedisProperty;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.Jws;

@@ -25,6 +25,7 @@
     
 
     <properties>
+		<spring-cloud.version>Hoxton.SR9</spring-cloud.version>
     	<lombok.version>1.14.8</lombok.version>
     	<mybatis.version>3.5.3</mybatis.version>
     	<mybatis-spring.version>2.0.5</mybatis-spring.version>
@@ -35,12 +36,20 @@
     <dependencyManagement>
         <dependencies>
         
-			  <dependency>
+			<dependency>
 				<groupId>fun.enou.alpha</groupId>
 				<artifactId>fun-enou-alpha-core</artifactId>
 				<version>${enou-alpha.version}</version>
 			</dependency>
         
+			<dependency>
+				<groupId>org.springframework.cloud</groupId>
+				<artifactId>spring-cloud-dependencies</artifactId>
+				<version>${spring-cloud.version}</version>
+
+				<type>pom</type>
+				<scope>import</scope>
+			</dependency>
         
             <dependency>
 				<groupId>org.mybatis</groupId>

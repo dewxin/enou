@@ -22,4 +22,9 @@ public class UserWordExtImpl implements UserWordExt {
     public void update(DtoDbUserWord dbUserWord) {
         sqlSession.getMapper(UserWordExt.class).update(dbUserWord);
     }
+
+	@Override
+	public DtoDbUserWord findOneRandom() {
+		return sqlSession.getMapper(UserWordExt.class).findOneRandom();
+	}
 }

@@ -7,6 +7,12 @@ public class EnouMsgJson {
 	private String msg;
 	
 	private Object data;
+	
+
+
+	public EnouMsgJson() {
+		super();
+	}
 
 	public int getCode() {
 		return code;

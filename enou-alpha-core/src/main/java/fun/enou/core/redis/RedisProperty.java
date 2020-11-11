@@ -1,11 +1,7 @@
-package fun.enou.alpha.config.property;
+package fun.enou.core.redis;
 
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.web.bind.annotation.GetMapping;
-
-import redis.clients.jedis.Jedis;
-import redis.clients.jedis.JedisPool;
 
 /**
  * @Author: nagi

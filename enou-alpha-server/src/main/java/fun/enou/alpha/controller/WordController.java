@@ -25,9 +25,6 @@ public class WordController {
     @Autowired
     IUserWordService userWordService;
 
-    @Autowired
-    SessionHolder sessionHolder;
-
     /**
      * 上传单词
      * @param webUserWord
@@ -51,6 +48,12 @@ public class WordController {
     public Object getWordAfter(
     		@RequestParam(value="time", defaultValue = "0") Long time) {
         return userWordService.getAllWordsAfter(time);
+    }
+    
+    
+    @GetMapping("/random")
+    public Object getOneRandomWord() {
+    	return userWordService.getOneRandomWord();
     }
 
     /**

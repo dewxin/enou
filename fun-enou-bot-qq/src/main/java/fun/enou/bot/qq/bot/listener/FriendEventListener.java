@@ -2,6 +2,7 @@ package fun.enou.bot.qq.bot.listener;
 
 
 import org.jetbrains.annotations.NotNull;
+import org.springframework.stereotype.Component;
 
 import kotlin.coroutines.CoroutineContext;
 import net.mamoe.mirai.event.EventHandler;
@@ -10,6 +11,7 @@ import net.mamoe.mirai.event.SimpleListenerHost;
 import net.mamoe.mirai.event.events.FriendAddEvent;
 import net.mamoe.mirai.event.events.NewFriendRequestEvent;
 
+@Component
 public class FriendEventListener extends SimpleListenerHost {
 	//自动同意加好友
 	@EventHandler

@@ -1,22 +1,18 @@
-package fun.enou.alpha.misc;
+package fun.enou.core.redis;
 
-import org.apache.commons.pool2.impl.GenericObjectPoolConfig;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.DependsOn;
 import org.springframework.stereotype.Component;
 
-import fun.enou.alpha.config.property.RedisProperty;
 import redis.clients.jedis.Jedis;
 import redis.clients.jedis.JedisPool;
 import redis.clients.jedis.JedisPoolConfig;
 
-@Component
-@DependsOn("redisProperty")
 public class RedisManager {
 	
 	JedisPool jedisPool;
 	
-	@Autowired
 	public RedisManager(RedisProperty redisProperty) {
 	    JedisPoolConfig jedisPoolConfig = new JedisPoolConfig();
 	    jedisPoolConfig.setMaxTotal(200);

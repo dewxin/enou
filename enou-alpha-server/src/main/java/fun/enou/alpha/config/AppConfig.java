@@ -1,14 +1,17 @@
 package fun.enou.alpha.config;
 
 import fun.enou.alpha.config.property.CommonProperty;
-import fun.enou.alpha.config.property.RedisProperty;
 import fun.enou.core.encoder.EncodeUserPwdAspect;
 import fun.enou.core.msg.AutoResponseMsgAspect;
+import fun.enou.core.redis.RedisManager;
+import fun.enou.core.redis.RedisProperty;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.autoconfigure.BackgroundPreinitializer;
 import org.springframework.boot.web.servlet.FilterRegistrationBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.DependsOn;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 import org.springframework.web.filter.CorsFilter;
@@ -18,10 +21,20 @@ import org.springframework.web.filter.CorsFilter;
 public class AppConfig {
 
     @Autowired
-    RedisProperty redisProperty;
-    
-    @Autowired
     CommonProperty commonPeoperty;
+    
+    @Bean
+    public RedisProperty redisProperty() {
+    	return new RedisProperty();
+    }
+
+    //todo try to move redisProperty into redisManager
+    @Bean
+    @DependsOn("redisProperty")
+    @Autowired
+    public RedisManager redisManager(RedisProperty redisProperty) {
+    	return new RedisManager(redisProperty);
+    }
     
     @Bean
     public EncodeUserPwdAspect passwordEncodeAspect() {

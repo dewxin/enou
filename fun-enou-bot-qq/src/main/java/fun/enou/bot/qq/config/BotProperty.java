@@ -1,11 +1,11 @@
-package fun.enou.bot.qq.bot.config;
+package fun.enou.bot.qq.config;
 
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.context.annotation.Configuration;
 
 @Configuration
 @ConfigurationProperties(prefix = "enou.bot")
-public class CommonProperty {
+public class BotProperty {
 	
 	private Long account;
 	

@@ -1,6 +1,7 @@
 package fun.enou.bot.qq.bot.listener;
 
 import org.jetbrains.annotations.NotNull;
+import org.springframework.stereotype.Component;
 
 import fun.enou.bot.qq.bot.utils.CommonUtil;
 import fun.enou.bot.qq.bot.utils.State;
@@ -10,6 +11,7 @@ import net.mamoe.mirai.event.ListeningStatus;
 import net.mamoe.mirai.event.SimpleListenerHost;
 import net.mamoe.mirai.message.GroupMessageEvent;
 
+@Component
 public class GroupMessageListener extends SimpleListenerHost {
 
 

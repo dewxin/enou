@@ -3,6 +3,7 @@ package fun.enou.alpha.misc;
 import fun.enou.alpha.config.property.TokenProperty;
 import fun.enou.alpha.msg.MsgEnum;
 import fun.enou.core.msg.EnouMessageException;
+import fun.enou.core.redis.RedisManager;
 import fun.enou.core.tool.IpUtil;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.ExpiredJwtException;
