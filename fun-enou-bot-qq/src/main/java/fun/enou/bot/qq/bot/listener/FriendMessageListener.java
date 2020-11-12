@@ -15,10 +15,13 @@ public class FriendMessageListener extends SimpleListenerHost {
 	@EventHandler
 	public ListeningStatus onMessage(FriendMessageEvent event) throws Exception {
 		
-		event.getFriend().getId();
-
-	    if(CommonUtil.randomYes()) {
-			event.getSender().sendMessage(event.getMessage());
+//		event.getFriend().getId();
+//
+//	    if(CommonUtil.randomYes()) {
+//			event.getSender().sendMessage(event.getMessage());
+//		}
+		if(event.getMessage().contentToString().contains("checkState")){
+			event.getSender().sendMessage("alive");
 		}
 
 		return ListeningStatus.LISTENING;

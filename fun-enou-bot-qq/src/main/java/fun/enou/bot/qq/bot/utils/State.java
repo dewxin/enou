@@ -8,19 +8,9 @@ package fun.enou.bot.qq.bot.utils;
  */
 public class State {
 
-	private static String token = "";
+	private static String botLastSendMessage = "";
     private static String lastMessage = "";
     private static double ratePercent = 0;
-
-    
-
-    public static String getToken() {
-		return token;
-	}
-
-	public static void setToken(String token) {
-		State.token = token;
-	}
 
 	public static String getLastMessage() {
         return lastMessage;
@@ -30,7 +20,16 @@ public class State {
         State.lastMessage = lastMessage;
     }
 
-    public static double getRatePercent() {
+
+    public static String getBotLastSentMessage() {
+		return botLastSendMessage;
+	}
+
+	public static void setBotLastSentMessage(String lastBotSendMessage) {
+		State.botLastSendMessage = lastBotSendMessage;
+	}
+
+	public static double getRatePercent() {
         return ratePercent;
     }
 

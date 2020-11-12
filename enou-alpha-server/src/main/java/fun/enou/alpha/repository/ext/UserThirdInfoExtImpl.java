@@ -20,7 +20,10 @@ public class UserThirdInfoExtImpl implements UserThirdInfoRepository {
 
 	@Override
 	public DtoDbUserThirdInfo find(DtoDbUserThirdInfo dbUserThirdInfo) {
-		return sqlSession.getMapper(UserThirdInfoExt.class).find(dbUserThirdInfo);
+		DtoDbUserThirdInfo result = sqlSession.getMapper(UserThirdInfoExt.class).find(dbUserThirdInfo);
+		if(result == null)
+			return dbUserThirdInfo;
+		return result;
 	}
 
 }

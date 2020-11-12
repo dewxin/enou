@@ -21,10 +21,14 @@ public class GroupMessageListener extends SimpleListenerHost {
 		if (event.getMessage().toString().matches(".*\\[mirai:at:.*\\].*")) {
 			return ListeningStatus.LISTENING;
 		}
+		
+		if(event.getMessage().toString().matches(".*\\[mirai:image:.*\\].*")) {
+			return ListeningStatus.LISTENING;
+		}
 
 
 		String content = event.getMessage().contentToString();
-		if(State.getLastMessage().equals(content)) {
+		if(State.getLastMessage().equals(content) && !State.getBotLastSentMessage().equals(content)) {
 		    State.setRatePercent(State.getRatePercent() + 0.1);
 		} else {
 			State.setRatePercent(0);
@@ -33,6 +37,7 @@ public class GroupMessageListener extends SimpleListenerHost {
 
 
 		if(CommonUtil.randomYes(State.getRatePercent())) {
+			State.setBotLastSentMessage(State.getLastMessage());
 			event.getGroup().sendMessage(State.getLastMessage());
 			State.setRatePercent(0);
 		}

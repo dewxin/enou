@@ -6,6 +6,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.client.RestTemplate;
 
+import fun.enou.bot.qq.feign.WordClient;
 import fun.enou.core.msg.EnouMsgJson;
 
 	//todo
@@ -16,20 +17,13 @@ import fun.enou.core.msg.EnouMsgJson;
 public class BotController {
 	
 	@Autowired
-	private RestTemplate restTemplate;
-	
+	private WordClient wordClient;
 
-	@GetMapping("/info")
-	public String getBotInfo() {
-		return "no bot info yet";
-	}
-	
 	@GetMapping("/word/random") 
 	public String getOneRandomWord(){
-    	EnouMsgJson msgJson = restTemplate.getForEntity("http://SERVICE-ALPHA/word/random", EnouMsgJson.class).getBody();
+
+    	EnouMsgJson msgJson = wordClient.getOneRandomWord();
     	return msgJson.getData().toString(); 
 	}
 	
-	
-
 }

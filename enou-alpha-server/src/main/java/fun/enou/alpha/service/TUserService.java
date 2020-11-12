@@ -124,7 +124,7 @@ public class TUserService implements IUserService{
 	public DtoWebUserThirdInfo getUserThirdInfo(String thirdParty) {
 		Long userId = sessionHolder.getUserId();
 		
-		DtoDbUserThirdInfo dbUserThirdInfo = new DtoDbUserThirdInfo(userId, thirdParty, null);
+		DtoDbUserThirdInfo dbUserThirdInfo = new DtoDbUserThirdInfo(userId, thirdParty, "");
 		dbUserThirdInfo = userThirdInfoRepository.find(dbUserThirdInfo);
 		return dbUserThirdInfo.ToDtoWeb();
 	}

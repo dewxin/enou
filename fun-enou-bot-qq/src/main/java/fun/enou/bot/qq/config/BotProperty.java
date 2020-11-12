@@ -10,6 +10,10 @@ public class BotProperty {
 	private Long account;
 	
 	private String password;
+	
+	private Long tmpUser;
+	
+	
 
 	public Long getAccount() {
 		return account;
@@ -26,6 +30,15 @@ public class BotProperty {
 	public void setPassword(String password) {
 		this.password = password;
 	}
+
+	public Long getTmpUser() {
+		return tmpUser;
+	}
+
+	public void setTmpUser(Long tmpUser) {
+		this.tmpUser = tmpUser;
+	}
+	
 	
 
 }
