@@ -9,11 +9,16 @@ import org.springframework.http.ResponseEntity;
 public class AutoResponseMsgAspect {
 
     @Around("@within(AutoResponseMsg)")
-    public Object wrapResponseMsg(ProceedingJoinPoint joinPoint) throws Throwable {
+    public ResponseEntity<?> wrapResponseMsg(ProceedingJoinPoint joinPoint) throws Throwable {
 
         Object result = joinPoint.proceed();
         if(result == null)
-        	return ResponseEntity.ok();
+        	return ResponseEntity.ok().build();
+        
+        if(result instanceof ResponseEntity) {
+        	ResponseEntity<?> entity = (ResponseEntity<?>) result;
+        	result = entity.getBody();
+        }
         
 		EnouMsgJson msgJson = EnouMsgJson.createDataMsg(result);
 		return ResponseEntity.ok(msgJson);

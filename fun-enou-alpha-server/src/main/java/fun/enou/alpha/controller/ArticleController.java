@@ -7,6 +7,7 @@ import fun.enou.core.msg.AutoResponseMsg;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
@@ -35,10 +36,10 @@ public class ArticleController {
 
     //todo return value too huge, need to reduce
     @GetMapping
-    public Object getArticle() {
+    public ResponseEntity<List<DtoWebArticle>> getArticle() {
 
         List<DtoWebArticle> articles = articleService.getArticles(0, 10);
-        return articles;
+        return ResponseEntity.ok(articles);
     }
 
     //todo analyze which words user have not learned,

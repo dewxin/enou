@@ -10,6 +10,7 @@ import fun.enou.core.msg.EnouMessageException;
 import lombok.extern.slf4j.Slf4j;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
@@ -23,9 +24,6 @@ public class UserController {
 	@Autowired
 	IUserService userService;
 	
-    @Autowired
-    SessionHolder sessionHolder;
-
     /**
      * 用户登录获取token
      * @param user 账号密码
@@ -33,14 +31,15 @@ public class UserController {
      * @throws EnouMessageException
      */
 	@PostMapping("/login")
-	public Object getToken(@RequestBody @Valid DtoWebUser user) throws EnouMessageException {
+	public ResponseEntity<String> getToken(@RequestBody @Valid DtoWebUser user) throws EnouMessageException {
 		DtoWebUser webUser = userService.findByAccountAndPassword(user);
 		if (webUser == null) {
 			log.warn("account or pwd is wrong, user:{}", user.getAccount());
 			MsgEnum.ACCOUNT_OR_PWD_WRONG.ThrowException();
 		}
 
-		return userService.loginGetToken(webUser);
+		String result = userService.loginGetToken(webUser);
+		return ResponseEntity.ok(result);
 	}
 	
 	/**
@@ -76,8 +75,9 @@ public class UserController {
     }
     
     @GetMapping("/third/info/{thirdParty}")
-    public Object getThirdInfo(@PathVariable("thirdParty") String thirdParty) {
-    	return userService.getUserThirdInfo(thirdParty);
+    public ResponseEntity<DtoWebUserThirdInfo> getThirdInfo(@PathVariable("thirdParty") String thirdParty) {
+    	DtoWebUserThirdInfo result = userService.getUserThirdInfo(thirdParty);
+    	return ResponseEntity.ok(result);
     }
     
 }

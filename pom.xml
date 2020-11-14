@@ -19,8 +19,10 @@
     
     
     <modules>
-    	<module>enou-alpha-core</module>
-    	<module>enou-alpha-server</module>
+    	<module>fun-enou-alpha-core</module>
+    	<module>fun-enou-alpha-server</module>
+    	<module>fun-enou-bot-qq</module>
+    	<module>fun-enou-server-center</module>
     </modules>
     
 

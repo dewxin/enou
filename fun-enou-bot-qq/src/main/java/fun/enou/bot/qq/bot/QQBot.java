@@ -17,6 +17,7 @@ import net.mamoe.mirai.BotFactoryJvm;
 import net.mamoe.mirai.contact.Friend;
 import net.mamoe.mirai.event.Events;
 import net.mamoe.mirai.utils.BotConfiguration;
+import net.mamoe.mirai.utils.BotConfiguration.MiraiProtocol;
 
 @Component
 @Slf4j
@@ -39,10 +40,18 @@ public class QQBot {
 	}
 
 	public void createInstanceAndLogin() {
+
+
 		bot = BotFactoryJvm.newBot(botProperty.getAccount(), botProperty.getPassword(), new BotConfiguration() {
 			{
+				MiraiProtocol protocol = MiraiProtocol.ANDROID_WATCH;
+				if(botProperty.getProtocol().toLowerCase().contains("pad")) {
+					protocol = MiraiProtocol.ANDROID_PAD;
+				} else if(botProperty.getProtocol().toLowerCase().contains("phone")) {
+					protocol = MiraiProtocol.ANDROID_PHONE;
+				}
 				// 设备缓存信息
-				setProtocol(MiraiProtocol.ANDROID_PAD);
+				setProtocol(protocol);
 				fileBasedDeviceInfo("deviceInfo.json");
 			}
 		});

@@ -1,12 +1,14 @@
 package fun.enou.alpha.controller;
 
 import fun.enou.alpha.dto.dtoweb.DtoWebUserWord;
-import fun.enou.alpha.misc.SessionHolder;
 import fun.enou.alpha.service.IUserWordService;
 import fun.enou.core.msg.AutoResponseMsg;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 import javax.validation.Valid;
 
@@ -31,12 +33,13 @@ public class WordController {
      * @return 
      */
     @PostMapping
-    public Object saveWord(@RequestBody @Valid DtoWebUserWord webUserWord) {
+    public ResponseEntity<DtoWebUserWord> saveWord(@RequestBody @Valid DtoWebUserWord webUserWord) {
         String word = webUserWord.getWord().toLowerCase();
         webUserWord.setWord(word);
         
         DtoWebUserWord retWord = userWordService.saveWord(webUserWord);
-        return retWord;
+        
+        return ResponseEntity.ok(retWord);
     }
 
     /**
@@ -45,15 +48,16 @@ public class WordController {
      * @return 返回单词
      */
     @GetMapping
-    public Object getWordAfter(
-    		@RequestParam(value="time", defaultValue = "0") Long time) {
-        return userWordService.getAllWordsAfter(time);
+    public ResponseEntity<List<DtoWebUserWord>> getWordAfter(@RequestParam(value="time", defaultValue = "0") Long time) {
+    	List<DtoWebUserWord> result = userWordService.getAllWordsAfter(time);
+    	return ResponseEntity.ok(result);
     }
     
     
     @GetMapping("/random")
-    public Object getOneRandomWord() {
-    	return userWordService.getOneRandomWord();
+    public ResponseEntity<String> getOneRandomWord() {
+    	String result = userWordService.getOneRandomWord();
+    	return ResponseEntity.ok(result);
     }
 
     /**
