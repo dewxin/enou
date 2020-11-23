@@ -2,7 +2,7 @@ package fun.enou.alpha.controller;
 
 import fun.enou.alpha.dto.dtoweb.DtoWebUserWord;
 import fun.enou.alpha.service.IUserWordService;
-import fun.enou.core.msg.AutoResponseMsg;
+import fun.enou.core.msg.AutoWrapMsg;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -21,7 +21,7 @@ import javax.validation.Valid;
 
 @RestController
 @RequestMapping("/word")
-@AutoResponseMsg
+@AutoWrapMsg
 public class WordController {
 
     @Autowired
@@ -59,7 +59,7 @@ public class WordController {
     	String result = userWordService.getOneRandomWord();
     	return ResponseEntity.ok(result);
     }
-
+    
     /**
      * 更新单词, 因为pc端识图不一定准确
      * @param webUserWord

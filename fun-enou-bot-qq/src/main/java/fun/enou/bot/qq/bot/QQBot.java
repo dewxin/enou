@@ -17,7 +17,6 @@ import net.mamoe.mirai.BotFactoryJvm;
 import net.mamoe.mirai.contact.Friend;
 import net.mamoe.mirai.event.Events;
 import net.mamoe.mirai.utils.BotConfiguration;
-import net.mamoe.mirai.utils.BotConfiguration.MiraiProtocol;
 
 @Component
 @Slf4j
@@ -37,6 +36,14 @@ public class QQBot {
 
 	public Bot getBot() {
 		return bot;
+	}
+
+	public BotController getBotController() {
+		return botController;
+	}
+
+	public void setBotController(BotController botController) {
+		this.botController = botController;
 	}
 
 	public void createInstanceAndLogin() {
@@ -64,7 +71,7 @@ public class QQBot {
 		log.info("{} bot login succeed", bot.getNick());
 		redisManager.getJedis().set("bot", bot.getId() + bot.getNick());
 
-		Events.registerEvents(bot, new GroupMessageListener());
+		Events.registerEvents(bot, new GroupMessageListener(this));
 		Events.registerEvents(bot, new FriendMessageListener());
 		Events.registerEvents(bot, new FriendEventListener());
 		tmpUser = bot.getFriend(botProperty.getTmpUser());

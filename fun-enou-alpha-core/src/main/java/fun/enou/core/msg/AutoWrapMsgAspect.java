@@ -6,9 +6,9 @@ import org.aspectj.lang.annotation.Aspect;
 import org.springframework.http.ResponseEntity;
 
 @Aspect
-public class AutoResponseMsgAspect {
+public class AutoWrapMsgAspect {
 
-    @Around("@within(AutoResponseMsg)")
+    @Around("@within(AutoWrapMsg)")
     public ResponseEntity<?> wrapResponseMsg(ProceedingJoinPoint joinPoint) throws Throwable {
 
         Object result = joinPoint.proceed();
@@ -20,7 +20,7 @@ public class AutoResponseMsgAspect {
         	result = entity.getBody();
         }
         
-		EnouMsgJson msgJson = EnouMsgJson.createDataMsg(result);
+		EnouMsgJson<?> msgJson = EnouMsgJson.createDataMsg(result);
 		return ResponseEntity.ok(msgJson);
     }
 }

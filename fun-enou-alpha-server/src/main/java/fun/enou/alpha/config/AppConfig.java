@@ -2,12 +2,11 @@ package fun.enou.alpha.config;
 
 import fun.enou.alpha.config.property.CommonProperty;
 import fun.enou.core.encoder.EncodeUserPwdAspect;
-import fun.enou.core.msg.AutoResponseMsgAspect;
+import fun.enou.core.msg.AutoWrapMsgAspect;
 import fun.enou.core.redis.RedisManager;
 import fun.enou.core.redis.RedisProperty;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.autoconfigure.BackgroundPreinitializer;
 import org.springframework.boot.web.servlet.FilterRegistrationBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -42,8 +41,8 @@ public class AppConfig {
     }
     
     @Bean
-    public AutoResponseMsgAspect AutoResponseMsgAspect() {
-    	return new AutoResponseMsgAspect();
+    public AutoWrapMsgAspect autoWrapMsgAspect() {
+    	return new AutoWrapMsgAspect();
     }
     
     @Bean

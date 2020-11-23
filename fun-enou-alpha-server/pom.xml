@@ -104,7 +104,7 @@
 				<groupId>org.springframework.boot</groupId>
 				<artifactId>spring-boot-maven-plugin</artifactId>
 			</plugin>
-
+<!-- 
 			<plugin>
 				<groupId>com.github.apiggs</groupId>
 				<artifactId>apiggs-maven-plugin</artifactId>
@@ -117,10 +117,22 @@
 						</goals>
 					</execution>
 				</executions>
-				<configuration>
-					<!-- options in there -->
-				</configuration>
+
 			</plugin>
+ -->        
+	        <plugin>
+				<groupId>fun.enou.maven</groupId>
+				<artifactId>feign-maven-plugin</artifactId>
+				<version>0.0.1</version>
+				<executions>
+					<execution>
+						<goals>
+							<goal>feign</goal>
+						</goals>
+						<phase>package</phase>
+					</execution>
+				</executions>
+        	</plugin>
 		</plugins>
 	</build>
 

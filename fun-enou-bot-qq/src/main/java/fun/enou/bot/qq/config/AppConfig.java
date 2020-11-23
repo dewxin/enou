@@ -7,6 +7,7 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.DependsOn;
 import org.springframework.web.client.RestTemplate;
 
+import fun.enou.core.msg.AutoWrapMsgAspect;
 import fun.enou.core.redis.RedisManager;
 import fun.enou.core.redis.RedisProperty;
 
@@ -24,7 +25,12 @@ public class AppConfig {
 	public RedisManager redisManager(RedisProperty redisProperty) {
 		return new RedisManager(redisProperty);
 	}
-
+	
+    @Bean
+    public AutoWrapMsgAspect autoWrapMsgAspect() {
+    	return new AutoWrapMsgAspect();
+    }
+    
 	@Bean
 	@LoadBalanced
 	RestTemplate restTemplate() {

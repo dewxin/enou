@@ -15,6 +15,10 @@ public enum MsgEnum {
 	
 	ACCOUNT_EXIST(10101),
 	ACCOUNT_OR_PWD_WRONG(10102),
+	
+	
+	//about word, start from 20000 to 21000
+	WORD_NOT_FOUND(20001),
 	;
 	private Integer code;
 	

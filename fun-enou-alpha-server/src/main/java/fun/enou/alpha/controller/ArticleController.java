@@ -2,7 +2,7 @@ package fun.enou.alpha.controller;
 
 import fun.enou.alpha.dto.dtoweb.DtoWebArticle;
 import fun.enou.alpha.service.IArticleService;
-import fun.enou.core.msg.AutoResponseMsg;
+import fun.enou.core.msg.AutoWrapMsg;
 
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -15,7 +15,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/article")
-@AutoResponseMsg
+@AutoWrapMsg
 public class ArticleController {
     @Autowired
     IArticleService articleService;

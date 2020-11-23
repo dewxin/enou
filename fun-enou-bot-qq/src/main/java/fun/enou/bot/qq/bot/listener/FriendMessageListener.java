@@ -8,7 +8,6 @@ import net.mamoe.mirai.message.FriendMessageEvent;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.stereotype.Component;
 
-import fun.enou.bot.qq.bot.utils.CommonUtil;
 
 @Component
 public class FriendMessageListener extends SimpleListenerHost {

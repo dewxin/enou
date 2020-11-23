@@ -2,10 +2,9 @@ package fun.enou.alpha.controller;
 
 import fun.enou.alpha.dto.dtoweb.DtoWebUser;
 import fun.enou.alpha.dto.dtoweb.DtoWebUserThirdInfo;
-import fun.enou.alpha.misc.SessionHolder;
 import fun.enou.alpha.msg.MsgEnum;
 import fun.enou.alpha.service.IUserService;
-import fun.enou.core.msg.AutoResponseMsg;
+import fun.enou.core.msg.AutoWrapMsg;
 import fun.enou.core.msg.EnouMessageException;
 import lombok.extern.slf4j.Slf4j;
 
@@ -18,7 +17,7 @@ import javax.validation.Valid;
 @Slf4j
 @RestController
 @RequestMapping
-@AutoResponseMsg
+@AutoWrapMsg
 public class UserController {
 
 	@Autowired
@@ -57,8 +56,9 @@ public class UserController {
 	 * @throws EnouMessageException
 	 */
     @PostMapping("/register")
-    public void registerUser(@RequestBody @Valid DtoWebUser user) throws EnouMessageException {
-        userService.saveUser(user);
+    public ResponseEntity<DtoWebUser> registerUser(@RequestBody @Valid DtoWebUser user) throws EnouMessageException {
+        DtoWebUser webUser = userService.saveUser(user);
+        return ResponseEntity.ok(webUser);
     }
     
     /**

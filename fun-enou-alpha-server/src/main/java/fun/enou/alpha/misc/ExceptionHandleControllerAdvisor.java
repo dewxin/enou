@@ -22,12 +22,12 @@ public class ExceptionHandleControllerAdvisor {
 
 	@ResponseBody
 	@ExceptionHandler(value = EnouMessageException.class)
-	public ResponseEntity<EnouMsgJson> AccountExceptionHandler(EnouMessageException ex) throws JsonProcessingException {
+	public ResponseEntity<EnouMsgJson<?>> AccountExceptionHandler(EnouMessageException ex) throws JsonProcessingException {
 		
 		int code = ex.getCode();
 		String msg =ex.getMessage();
 		
-		EnouMsgJson enouMsgJson =  EnouMsgJson.createErrorMsg(code, msg);
+		EnouMsgJson<?> enouMsgJson = EnouMsgJson.createErrorMsg(code, msg);
 
 		return ResponseEntity.status(HttpStatus.BAD_REQUEST)
 				.body(enouMsgJson);

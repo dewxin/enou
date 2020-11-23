@@ -1,12 +1,12 @@
 package fun.enou.core.msg;
 
-public class EnouMsgJson {
+public class EnouMsgJson<T> {
 	
 	private int code;
 	
 	private String msg;
 	
-	private Object data;
+	private T data;
 	
 
 
@@ -30,11 +30,11 @@ public class EnouMsgJson {
 		this.msg = msg;
 	}
 	
-	public Object getData() {
+	public T getData() {
 		return data;
 	}
 
-	public void setData(Object data) {
+	public void setData(T data) {
 		this.data = data;
 	}
 
@@ -45,19 +45,20 @@ public class EnouMsgJson {
 		this.data = null;
 	} 
 	
-	private EnouMsgJson(Object data) {
+	private EnouMsgJson(T data) {
 		super();
 		this.code = 0;
 		this.msg = null;
 		this.data = data;
 	} 
 	
-	public static EnouMsgJson createErrorMsg(int code, String msg) {
-		return new EnouMsgJson(code, msg);
+	public static EnouMsgJson<?> createErrorMsg(int code, String msg) {
+		return new EnouMsgJson<Object>(code, msg);
 	}
 	
-	public static EnouMsgJson createDataMsg(Object data) {
-		return new EnouMsgJson(data);
+	
+	public static <T> EnouMsgJson<T> createDataMsg(T data) {
+		return new EnouMsgJson<T>(data);
 	}
 	
 }

@@ -6,14 +6,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestTemplate;
 
 import fun.enou.bot.qq.bot.QQBot;
-import fun.enou.bot.qq.bot.listener.FriendEventListener;
-import fun.enou.bot.qq.bot.listener.FriendMessageListener;
-import fun.enou.bot.qq.bot.listener.GroupMessageListener;
-import fun.enou.bot.qq.bot.utils.State;
-import fun.enou.bot.qq.config.BotProperty;
 import fun.enou.bot.qq.controller.BotController;
-import fun.enou.core.msg.EnouMsgJson;
-import fun.enou.core.redis.RedisManager;
 import lombok.extern.slf4j.Slf4j;
 
 
@@ -24,9 +17,6 @@ public class BotRunner implements CommandLineRunner {
 	@Autowired
 	private QQBot bot;
 	
-	
-	@Autowired
-	private BotController botController;
 
 	@Autowired
 	RestTemplate restTemplate;

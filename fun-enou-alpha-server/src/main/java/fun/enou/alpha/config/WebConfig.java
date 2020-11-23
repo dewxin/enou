@@ -24,7 +24,10 @@ public class WebConfig implements WebMvcConfigurer {
     		"/register",
     		"/login",
     		"/static",
-    		"/word/random"
+    		"/word/random",
+    		"/dev/*",
+    		"/api/**",
+    		"/error",
     };
     
     @Override

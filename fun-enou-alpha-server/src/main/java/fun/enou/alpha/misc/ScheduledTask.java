@@ -2,17 +2,11 @@ package fun.enou.alpha.misc;
 
 import fun.enou.alpha.config.property.TokenProperty;
 import fun.enou.core.redis.RedisProperty;
-import io.jsonwebtoken.Claims;
-import io.jsonwebtoken.ExpiredJwtException;
-import io.jsonwebtoken.Jws;
-import io.jsonwebtoken.Jwts;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 import redis.clients.jedis.Jedis;
 
-import java.util.Set;
 
 /**
  * @Author: nagi
