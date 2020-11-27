@@ -1,44 +1,51 @@
 package fun.enou.alpha.dto.dtodb;
 
 import org.springframework.data.annotation.Id;
-import org.springframework.data.relational.core.mapping.Column;
 import org.springframework.data.relational.core.mapping.Table;
 
 @Table("oxford_dict_def")
 public class DtoDbDictDef {
+	
 
 	@Id
 	private Integer id;
 	
-	private String def;
-	
-	@Column("ch_def")
-	private String chDef;
-
+    private String phrase;
+    private String def;
+    private String pos;
+    private String example;
+    
 	public Integer getId() {
 		return id;
 	}
-
 	public void setId(Integer id) {
 		this.id = id;
 	}
-
+    
+	public String getPhrase() {
+		return phrase;
+	}
+	public void setPhrase(String phrase) {
+		this.phrase = phrase;
+	}
 	public String getDef() {
 		return def;
 	}
-
 	public void setDef(String def) {
 		this.def = def;
 	}
-
-	public String getChDef() {
-		return chDef;
+	public String getPos() {
+		return pos;
 	}
-
-	public void setChDef(String chDef) {
-		this.chDef = chDef;
+	public void setPos(String pos) {
+		this.pos = pos;
 	}
-	
-	
-	
+	public String getExample() {
+		return example;
+	}
+	public void setExample(String example) {
+		this.example = example;
+	}
+    
+    
 }

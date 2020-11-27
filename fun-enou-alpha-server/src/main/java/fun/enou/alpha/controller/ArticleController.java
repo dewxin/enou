@@ -42,10 +42,10 @@ public class ArticleController {
         return ResponseEntity.ok(articles);
     }
 
-    //todo analyze which words user have not learned,
-    // and show them the meaning.
+
     @GetMapping("/{articleId}/unkownword")
     public void getArticleUnknownWords(@PathVariable("articleId") Long id) {
-
+    //todo analyze which words user have not learned,
+    // and show them the meaning.
     }
 }

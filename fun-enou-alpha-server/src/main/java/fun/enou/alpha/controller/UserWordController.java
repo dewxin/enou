@@ -22,7 +22,7 @@ import javax.validation.Valid;
 @RestController
 @RequestMapping("/word")
 @AutoWrapMsg
-public class WordController {
+public class UserWordController {
 
     @Autowired
     IUserWordService userWordService;

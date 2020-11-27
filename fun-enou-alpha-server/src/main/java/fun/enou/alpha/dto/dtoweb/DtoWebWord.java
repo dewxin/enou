@@ -3,8 +3,11 @@ package fun.enou.alpha.dto.dtoweb;
 import java.util.LinkedList;
 import java.util.List;
 
+import com.google.common.collect.Lists;
+
 import fun.enou.alpha.dto.dtodb.DtoDbDictDef;
 import fun.enou.alpha.dto.dtodb.DtoDbDictWord;
+import fun.enou.alpha.dto.dtodb.DtoDbDictDef;
 
 public class DtoWebWord {
 	
@@ -16,9 +19,7 @@ public class DtoWebWord {
 	
 	private String usPronounce;
 	
-	private String[] defList;
-	
-	private String[] chDefList;
+	private List<DtoDbDictDef> definitionList = new LinkedList<DtoDbDictDef>();
 
 	public DtoWebWord() {}
 	
@@ -27,16 +28,8 @@ public class DtoWebWord {
 		this.spell = dbDictWord.getSpell();
 		this.pronounce = dbDictWord.getPronounce();
 		this.usPronounce = dbDictWord.getUsPronounce();
+		dbDictDef.forEach(def->{definitionList.add(def);});
 		
-		List<String> defList = new LinkedList<>(); 
-		List<String> chDefList = new LinkedList<>();
-		for(DtoDbDictDef dictDef : dbDictDef) {
-			defList.add(dictDef.getDef());
-			chDefList.add(dictDef.getChDef());
-		}
-		
-		this.defList = defList.toArray(new String[defList.size()]);
-		this.chDefList = chDefList.toArray(new String[chDefList.size()]);
 	}
 	
 	public DtoDbDictWord toDtoDbWord() {
@@ -48,14 +41,8 @@ public class DtoWebWord {
 	}
 	
 	public List<DtoDbDictDef> toDtoDbDef() {
-		List<DtoDbDictDef> dbDefList = new LinkedList<>();
-		for(int i = 0; i < defList.length; ++i) {
-			DtoDbDictDef dbDictDef = new DtoDbDictDef();
-			dbDictDef.setDef(defList[i]);
-			dbDictDef.setChDef(chDefList[i]);
-			dbDefList.add(dbDictDef);
-		}
-		return dbDefList;
+
+		return definitionList;
 	}
 
 	public Integer getId() {
@@ -90,22 +77,13 @@ public class DtoWebWord {
 		this.usPronounce = usPronounce;
 	}
 
-	public String[] getDefList() {
-		return defList;
+	public List<DtoDbDictDef> getDefinitionList() {
+		return definitionList;
 	}
 
-	public void setDefList(String[] defList) {
-		this.defList = defList;
+	public void setDefinitionList(List<DtoDbDictDef> definitionList) {
+		this.definitionList = definitionList;
 	}
-
-	public String[] getChDefList() {
-		return chDefList;
-	}
-
-	public void setChDefList(String[] chDefList) {
-		this.chDefList = chDefList;
-	}
-
 
 	
 }

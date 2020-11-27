@@ -1,7 +1,12 @@
 package fun.enou.alpha.service;
 
+import static org.hamcrest.CoreMatchers.containsString;
+
+import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Optional;
+import java.util.Random;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -17,6 +22,7 @@ import fun.enou.alpha.msg.MsgEnum;
 import fun.enou.alpha.repository.DictDefRepository;
 import fun.enou.alpha.repository.DictWordRepository;
 import fun.enou.core.msg.EnouMessageException;
+import fun.enou.core.tool.RandomUtil;
 
 @Service
 public class TWordService implements IWordService{
@@ -47,14 +53,8 @@ public class TWordService implements IWordService{
 		dictWord.setDefId(idList);
 		wordRepository.save(dictWord);
 	}
-
-	@Override
-	public DtoWebWord getWebWord(String spell) throws EnouMessageException {
-
-		DtoDbDictWord dbDictWord = wordRepository.findBySpell(spell);
-		if(dbDictWord == null) {
-			MsgEnum.WORD_NOT_FOUND.ThrowException();
-		}
+	
+	private DtoWebWord getWebWordByDictWord(DtoDbDictWord dbDictWord) {
 		ObjectMapper objectMapper = new ObjectMapper();
 		
 		List<Integer> defIdList = new LinkedList<Integer>();
@@ -68,6 +68,43 @@ public class TWordService implements IWordService{
 		Iterable<DtoDbDictDef> dictDefList =  defRepository.findAllById(defIdList);
 		
 		return new DtoWebWord(dbDictWord, dictDefList);
+	}
+
+	@Override
+	public DtoWebWord getWebWord(String spell) throws EnouMessageException {
+
+		DtoDbDictWord dbDictWord = wordRepository.findBySpell(spell);
+		if(dbDictWord == null) {
+			MsgEnum.WORD_NOT_FOUND.ThrowException();
+		}
+		
+		return getWebWordByDictWord(dbDictWord);
+	}
+
+	@Override
+	public List<DtoWebWord> getWebWordList(int count) throws EnouMessageException {
+		
+		List<DtoWebWord> resultList = new LinkedList<>();
+		long wordCountLong = wordRepository.count();
+		
+		HashSet<Integer> wordIdSet = new HashSet<Integer>();
+		while(wordIdSet.size() < count) {
+
+			Integer id = (int) (RandomUtil.randomLong() % wordCountLong);
+			if(!wordIdSet.contains(id))
+				wordIdSet.add(id);
+		}
+
+		for(Integer id : wordIdSet) {
+			Optional<DtoDbDictWord> dbDictWordOptional = wordRepository.findById(id);
+			if(!dbDictWordOptional.isPresent())
+				continue;
+			
+			DtoWebWord word = getWebWordByDictWord(dbDictWordOptional.get());
+			resultList.add(word);
+		}
+		
+		return resultList;
 	}
 
 }

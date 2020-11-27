@@ -1,6 +1,8 @@
 package fun.enou.bot.qq.bot.listener;
 
 
+import java.text.MessageFormat;
+
 import org.jetbrains.annotations.NotNull;
 import org.springframework.stereotype.Component;
 
@@ -23,9 +25,8 @@ public class FriendEventListener extends SimpleListenerHost {
 	//加好友后自动消息
 	@EventHandler
 	public ListeningStatus onAddFriend(FriendAddEvent event) {
-		event.getFriend().sendMessage(
-				String.format("很高兴认识你，{}。",event.getFriend().getNick())
-		);
+		String helloMsg = MessageFormat.format("很高兴认识你, {0}", event.getFriend().getNick());
+		event.getFriend().sendMessage(helloMsg);
 		return ListeningStatus.LISTENING;
 	}
 	
