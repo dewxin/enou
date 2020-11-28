@@ -4,9 +4,6 @@ import java.util.List;
 
 import fun.enou.bot.qq.bot.QQBot;
 import fun.enou.bot.qq.bot.utils.CommonUtil;
-import fun.enou.bot.qq.controller.BotController;
-import net.mamoe.mirai.contact.ContactList;
-import net.mamoe.mirai.contact.Group;
 import net.mamoe.mirai.event.ListeningStatus;
 import net.mamoe.mirai.message.GroupMessageEvent;
 
@@ -24,12 +21,12 @@ public class IdleState extends BotState {
     private double ratePercent = 0;
 
 
-    private static IdleState idleState = new IdleState();
-
-    public static IdleState instance() {
-        return idleState;
+    public static IdleState newInstance(QQBot bot, Long groupId) {
+        IdleState state = new IdleState();
+        state.setBot(bot);
+        state.setGroupId(groupId);
+        return state;
     }
-
 
     public String getLastMessage() {
         return lastMessage;
@@ -92,17 +89,22 @@ public class IdleState extends BotState {
             }
         }
 
+        if(content.startsWith("出题")) {
+            qqBot.enterChallengeState(groupId);
+        }
+
+
         return ListeningStatus.LISTENING;
     }
 
     @Override
     public void onEnterState() {
-        qqBot.sendMsgToAllGroups("机器人进入Idle状态");
+        // qqBot.sendMsgToAllGroups("机器人进入Idle状态");
     }
 
     @Override
     public void onExitState() {
-        qqBot.sendMsgToAllGroups("机器人退出Idle状态");
+        // qqBot.sendMsgToAllGroups("机器人退出Idle状态");
     }
 
 

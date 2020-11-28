@@ -7,6 +7,7 @@ import net.mamoe.mirai.message.GroupMessageEvent;
 public abstract class BotState {
 
     protected QQBot qqBot;
+    protected Long groupId;
     
     public void setBot(QQBot qqBot) {
         this.qqBot = qqBot;
@@ -14,6 +15,14 @@ public abstract class BotState {
 
     public QQBot getBot() {
         return this.qqBot;
+    }
+
+    public Long getGroupId() {
+        return groupId;
+    }
+
+    public void setGroupId(Long groupId) {
+        this.groupId = groupId;
     }
 
     public abstract ListeningStatus handleGroupMessage(GroupMessageEvent event);

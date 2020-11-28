@@ -17,8 +17,4 @@ public class SheduleTask {
     	bot.sendEnouWordNotice();
     }
     
-    @Scheduled(cron = "0 0 20 * * ?")
-    public void botStartWordChallenge() {
-    	bot.enterChallengeState();
-    }
 }

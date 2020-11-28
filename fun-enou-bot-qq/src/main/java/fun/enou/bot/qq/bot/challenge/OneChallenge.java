@@ -7,7 +7,9 @@ import java.util.List;
 import fun.enou.core.tool.RandomUtil;
 import fun.enou.feign.generated.auto_client.DtoDbDictDef;
 import fun.enou.feign.generated.auto_client.DtoWebWord;
+import lombok.extern.slf4j.Slf4j;
 
+@Slf4j
 public class OneChallenge {
 
 	private final String PREFIX ="请选出符合定义的单词，";
@@ -39,6 +41,7 @@ public class OneChallenge {
 				answer = option;
 				List<DtoDbDictDef> defList = wordList.get(i).getDefinitionList();
 				if(defList.isEmpty()) {
+					log.warn("{0} defList is empty", wordList.get(i).getSpell());
 					continue;
 				}
 				int defIndex = RandomUtil.randomInt(defList.size());

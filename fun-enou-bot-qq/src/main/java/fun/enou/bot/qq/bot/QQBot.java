@@ -1,6 +1,7 @@
 package fun.enou.bot.qq.bot;
 
 import java.text.MessageFormat;
+import java.util.HashMap;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
@@ -33,7 +34,7 @@ public class QQBot {
 	private Bot bot;
 	private Friend tmpUser;
 
-	private BotState state;
+	private HashMap<Long, BotState> stateMap = new HashMap<>();
 	
 	@Autowired
 	private ApplicationContext context;
@@ -46,8 +47,20 @@ public class QQBot {
 	@Autowired
 	private BotController botController;
 	
-	public BotState getState() {
-		return state;
+	public BotState getGroupState(Long groupId) {
+		if(!stateMap.containsKey(groupId)) {
+			stateMap.put(groupId, IdleState.newInstance(this, groupId));
+		}
+		return stateMap.get(groupId);
+	}
+
+	public void setGroupState(Long groupId, BotState botState) {
+		if(!stateMap.containsKey(groupId)) {
+			stateMap.put(groupId, IdleState.newInstance(this, groupId));
+			return;
+		}
+
+		stateMap.replace(groupId, botState);
 	}
 
 	public Bot getBot() {
@@ -63,11 +76,8 @@ public class QQBot {
 	}
 
 	public void init() {
-		IdleState.instance().setBot(this);
-		ChallengeState.instance().setBot(this);
 		WordChallenge.instance().setBot(this);
 
-		this.state = IdleState.instance();
 	}
 
 	public void createInstanceAndLogin() {
@@ -106,20 +116,25 @@ public class QQBot {
 		tmpUser.sendMessage("快登录http://www.enou.fun复习一下单词吧。");
 	}
 	
-	public void enterChallengeState() {
-		enterState(ChallengeState.instance());
+	public void enterChallengeState(Long groupId) {
+		ChallengeState state = ChallengeState.newInstance(this, groupId);
+		enterState(groupId, state);
 	}
 
-	public void enterIdleState() {
-		enterState(IdleState.instance());
+	public void enterIdleState(Long groupId) {
+		IdleState state = IdleState.newInstance(this, groupId);
+		enterState(groupId, state);
 	}
 
-	private void enterState(BotState botState) {
-		if(this.state != null)
-			this.state.onExitState();
+	private void enterState(Long groupId, BotState botState) {
+		BotState prevState = getGroupState(groupId);
+		if(prevState != null){
+			prevState.onExitState();
+		}
 
-		this.state = botState;
-		this.state.onEnterState();
+		setGroupState(groupId, botState);
+
+		botState.onEnterState();
 	}
 	
 	public void sendMsgToAllGroups(String message) {

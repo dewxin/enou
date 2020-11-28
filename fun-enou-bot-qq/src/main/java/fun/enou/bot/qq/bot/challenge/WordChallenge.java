@@ -2,11 +2,14 @@ package fun.enou.bot.qq.bot.challenge;
 
 import fun.enou.bot.qq.bot.QQBot;
 import fun.enou.feign.generated.auto_client.DtoWebWord;
+import lombok.extern.slf4j.Slf4j;
+
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Queue;
 
 
+@Slf4j
 public class WordChallenge {
 
 	private static WordChallenge wordChallenge = new WordChallenge();
@@ -54,6 +57,8 @@ public class WordChallenge {
 			OneChallenge oneChallenge = OneChallenge.newInstance(tmpListCount4);
 			challengeList.add(oneChallenge);
 		}
+
+		log.info("word count is {0}, chanllenge count is {1}", wordList.size(), challengeList.size());
 	}
 	
 	private void reset() {
