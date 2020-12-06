@@ -1,6 +1,6 @@
 package fun.enou.alpha.dto.dtodb;
 
-import fun.enou.alpha.dto.dtoweb.DtoWebUserWord;
+import fun.enou.alpha.dto.dtoweb.DtoWebOldUserWord;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.relational.core.mapping.Column;
 import org.springframework.data.relational.core.mapping.Table;
@@ -15,7 +15,7 @@ import java.sql.Timestamp;
  */
 
 @Table("user_word")
-public class DtoDbUserWord {
+public class DtoDbOldUserWord {
 
     @Id
     private Long id;
@@ -31,10 +31,10 @@ public class DtoDbUserWord {
     @Column("created_at")
     private Timestamp createdAt;
 
-    public DtoDbUserWord() {
+    public DtoDbOldUserWord() {
     }
 
-    public DtoDbUserWord(Long id, Long userId, String word, int queryTime, Timestamp createdAt) {
+    public DtoDbOldUserWord(Long id, Long userId, String word, int queryTime, Timestamp createdAt) {
         this.id = id;
         this.userId = userId;
         this.word = word;
@@ -42,8 +42,8 @@ public class DtoDbUserWord {
         this.createdAt = createdAt;
     }
 
-    public DtoWebUserWord toDtoWeb() {
-        return new DtoWebUserWord(id, word);
+    public DtoWebOldUserWord toDtoWeb() {
+        return new DtoWebOldUserWord(id, word);
     }
 
     public Long getId() {

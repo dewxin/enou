@@ -1,6 +1,6 @@
 package fun.enou.alpha.dto.dtoweb;
 
-import fun.enou.alpha.dto.dtodb.DtoDbUserWord;
+import fun.enou.alpha.dto.dtodb.DtoDbOldUserWord;
 import org.hibernate.validator.constraints.Length;
 
 import javax.validation.constraints.NotNull;
@@ -14,7 +14,7 @@ import javax.validation.constraints.Pattern;
  * @Attention:
  */
 
-public class DtoWebUserWord {
+public class DtoWebOldUserWord {
 
     private Long id;
 
@@ -23,16 +23,16 @@ public class DtoWebUserWord {
     @Pattern(regexp ="[a-zA-Z \\-]+")
     private String word;
 
-    public DtoWebUserWord() {
+    public DtoWebOldUserWord() {
     }
 
-    public DtoWebUserWord(Long id, String word) {
+    public DtoWebOldUserWord(Long id, String word) {
         this.id = id;
         this.word = word;
     }
 
-    public DtoDbUserWord toDtoDb() {
-        return new DtoDbUserWord(id, null,word,1,null);
+    public DtoDbOldUserWord toDtoDb() {
+        return new DtoDbOldUserWord(id, null,word,1,null);
     }
 
     public Long getId() {

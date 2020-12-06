@@ -4,6 +4,7 @@ import java.util.List;
 
 import fun.enou.bot.qq.bot.QQBot;
 import fun.enou.bot.qq.bot.utils.CommonUtil;
+import lombok.extern.slf4j.Slf4j;
 import net.mamoe.mirai.event.ListeningStatus;
 import net.mamoe.mirai.message.GroupMessageEvent;
 
@@ -14,6 +15,7 @@ import net.mamoe.mirai.message.GroupMessageEvent;
  * @Description:
  * @Attention:
  */
+@Slf4j
 public class IdleState extends BotState {
 
     private String botLastSendMessage = "";
@@ -99,12 +101,14 @@ public class IdleState extends BotState {
 
     @Override
     public void onEnterState() {
-        // qqBot.sendMsgToAllGroups("机器人进入Idle状态");
+        log.info("bot enter idle state groupId is {0}", groupId);
+        //qqBot.sendMsgToDevGroups("机器人进入Idle状态 groupId is " + groupId);
     }
 
     @Override
     public void onExitState() {
-        // qqBot.sendMsgToAllGroups("机器人退出Idle状态");
+        log.info("bot exit idle state groupId is {0}", groupId);
+        //qqBot.sendMsgToDevGroups("机器人退出Idle状态 groupId is " + groupId);
     }
 
 

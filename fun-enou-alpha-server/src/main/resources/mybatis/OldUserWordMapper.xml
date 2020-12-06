@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="fun.enou.alpha.repository.ext.OldUserWordExt">
+    <update id="update" parameterType="fun.enou.alpha.dto.dtodb.DtoDbOldUserWord">
+		update user_word set
+			word = #{word}
+		where id = #{id};
+    </update>
+    
+    <select id="findOneRandom" resultType="fun.enou.alpha.dto.dtodb.DtoDbOldUserWord">
+		select  max(id)*rand() from user_word into @min;
+		select * from user_word where id >= @min limit 1;
+    </select>
+
+</mapper>

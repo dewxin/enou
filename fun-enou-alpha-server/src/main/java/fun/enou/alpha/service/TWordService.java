@@ -2,6 +2,7 @@ package fun.enou.alpha.service;
 
 import static org.hamcrest.CoreMatchers.containsString;
 
+import java.util.Arrays;
 import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
@@ -23,7 +24,9 @@ import fun.enou.alpha.repository.DictDefRepository;
 import fun.enou.alpha.repository.DictWordRepository;
 import fun.enou.core.msg.EnouMessageException;
 import fun.enou.core.tool.RandomUtil;
+import lombok.extern.slf4j.Slf4j;
 
+@Slf4j
 @Service
 public class TWordService implements IWordService{
 
@@ -35,6 +38,22 @@ public class TWordService implements IWordService{
 
 	@Override
 	public void uploadWord(DtoWebWord webWord) {
+		
+		if(webWord.getLinkWord() != null) {
+			try {
+
+				DtoDbDictWord linkWord = wordRepository.findBySpell(webWord.getLinkWord());
+				DtoDbDictWord dictWord = webWord.toDtoDbWord();
+				dictWord.setDefId(linkWord.getDefId());
+				wordRepository.save(dictWord);
+				return;
+			} catch (Exception ex) {
+				String messageTrace =Arrays.toString(ex.getStackTrace());
+				log.error(messageTrace);
+			}
+
+		}
+
 		DtoDbDictWord dictWord = webWord.toDtoDbWord();
 		List<DtoDbDictDef> dictDefList = webWord.toDtoDbDef();
 		List<Integer> resultDefList = new LinkedList<>();
@@ -48,22 +67,22 @@ public class TWordService implements IWordService{
 		try {
 			idList = objMapper.writeValueAsString(resultDefList);
 		} catch (JsonProcessingException e) {
-			e.printStackTrace();
+			log.warn(e.getMessage());
 		}
 		dictWord.setDefId(idList);
 		wordRepository.save(dictWord);
 	}
 	
-	private DtoWebWord getWebWordByDictWord(DtoDbDictWord dbDictWord) {
+	private DtoWebWord getWebWordByDictWord(DtoDbDictWord dbDictWord) throws EnouMessageException {
 		ObjectMapper objectMapper = new ObjectMapper();
 		
-		List<Integer> defIdList = new LinkedList<Integer>();
+		List<Integer> defIdList = new LinkedList<>();
 		try {
 			defIdList = objectMapper.readValue(dbDictWord.getDefId(), new TypeReference<List<Integer>>(){});
 		} catch (JsonProcessingException e) {
-			e.printStackTrace();
+			log.warn(e.getMessage());
+			MsgEnum.WORD_DEF_LIST_PARSE_FAIL.ThrowException();
 		}
-		
 		
 		Iterable<DtoDbDictDef> dictDefList =  defRepository.findAllById(defIdList);
 		
@@ -87,7 +106,7 @@ public class TWordService implements IWordService{
 		List<DtoWebWord> resultList = new LinkedList<>();
 		long wordCountLong = wordRepository.count();
 		
-		HashSet<Integer> wordIdSet = new HashSet<Integer>();
+		HashSet<Integer> wordIdSet = new HashSet<>();
 		while(wordIdSet.size() < count) {
 
 			Integer id = (int) (RandomUtil.randomLong() % wordCountLong);

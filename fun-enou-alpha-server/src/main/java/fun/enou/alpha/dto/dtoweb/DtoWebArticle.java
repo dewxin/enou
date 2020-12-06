@@ -8,6 +8,8 @@ import javax.validation.constraints.Size;
 
 public class DtoWebArticle {
 
+    private Long id;
+
     @NotNull(message = "title cannot be null")
     @Size(min = 5, max = 100, message = "title length cannot be lesser than 5 or greater than 100")
     private String title;
@@ -20,13 +22,14 @@ public class DtoWebArticle {
     public DtoWebArticle() {
     }
 
-    public DtoWebArticle(String title, String content) {
+    public DtoWebArticle(Long id, String title, String content) {
+        this.id = id;
         this.title = title;
         this.content = content;
     }
 
     public DtoDbArticle toDtoDb() {
-        return new DtoDbArticle(null, title, content, 0);
+        return new DtoDbArticle(id, title, content, 0);
     }
 
     public String getTitle() {
@@ -43,6 +46,14 @@ public class DtoWebArticle {
 
     public void setContent(String content) {
         this.content = content;
+    }
+
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
     }
 
 }

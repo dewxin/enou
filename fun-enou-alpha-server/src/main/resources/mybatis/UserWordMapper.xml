@@ -4,15 +4,15 @@
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
 <mapper namespace="fun.enou.alpha.repository.ext.UserWordExt">
-    <update id="update" parameterType="fun.enou.alpha.dto.dtodb.DtoDbUserWord">
-		update user_word set
-			word = #{word}
-		where id = #{id};
-    </update>
+    <insert id="save" parameterType="fun.enou.alpha.dto.dtodb.ext.DtoDbUserWord">
+      insert into euser_word (user_id, word_id)
+      values (#{userId}, #{wordId})
+      on duplicate key 
+      update word_id = #{wordId};
+    </insert>
     
-    <select id="findOneRandom" resultType="fun.enou.alpha.dto.dtodb.DtoDbUserWord">
-		select  max(id)*rand() from user_word into @min;
-		select * from user_word where id >= @min limit 1;
+    <select id="getAllWordList" parameterType="Long" resultType="Integer">
+   		select word_id from euser_word 
+   		where user_id = #{userId};
     </select>
-
 </mapper>

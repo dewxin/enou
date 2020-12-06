@@ -7,9 +7,11 @@ import java.util.TimerTask;
 import fun.enou.bot.qq.bot.QQBot;
 import fun.enou.bot.qq.bot.challenge.OneChallenge;
 import fun.enou.bot.qq.bot.challenge.WordChallenge;
+import lombok.extern.slf4j.Slf4j;
 import net.mamoe.mirai.event.ListeningStatus;
 import net.mamoe.mirai.message.GroupMessageEvent;
 
+@Slf4j
 public class ChallengeState extends BotState {
 
 
@@ -28,11 +30,8 @@ public class ChallengeState extends BotState {
         String msg = event.getMessage().contentToString();
         //todo get the sender's qq number and nickname , store the info 
         if(currentChallenge == null) {
-            return ListeningStatus.LISTENING;
-        }
-
-        if(msg.equals("idle")) {
             qqBot.enterIdleState(groupId);
+            return ListeningStatus.LISTENING;
         }
 
         if(currentChallenge.isTrueAnswer(msg)) {
@@ -47,12 +46,9 @@ public class ChallengeState extends BotState {
 
     @Override
     public void onEnterState() {
-        qqBot.getBot().getGroup(groupId).sendMessage("请听题:");
-        if(WordChallenge.instance().isOver()) {
-            WordChallenge.instance().prepare();
-        }
-
+        log.info("bot enter challenge state groupId is {0}", groupId);;
         currentChallenge = WordChallenge.instance().getOneChallenge();
+        qqBot.getBot().getGroup(groupId).sendMessage("请听题:");
         qqBot.getBot().getGroup(groupId).sendMessage(currentChallenge.getQuestion());
         for(String option : currentChallenge.getOptionList()) {
             qqBot.getBot().getGroup(groupId).sendMessage(option);
@@ -63,8 +59,12 @@ public class ChallengeState extends BotState {
 
             @Override
             public void run () {
-                challengeOver();
-                qqBot.getBot().getGroup(groupId).sendMessage("居然没有人能解答出我的问题，人生真是寂寞如雪啊~");
+                try {
+                    challengeOver();
+                    qqBot.getBot().getGroup(groupId).sendMessage("居然没有人能解答出我的问题，人生真是寂寞如雪啊~");
+                } catch (Exception e) {
+                    log.warn(e.getMessage());
+                } 
             }
 
         }, 1000l*30);
@@ -72,10 +72,10 @@ public class ChallengeState extends BotState {
 
 
     private void challengeOver() {
-        qqBot.getBot().getGroup(groupId).sendMessage(currentChallenge.getExplanation());
         qqBot.enterIdleState(groupId);
         challengeTimer.cancel();
         challengeTimer = null;
+        qqBot.getBot().getGroup(groupId).sendMessage(currentChallenge.getExplanation());
     }
 
     // private void startWordChallenge() {
@@ -119,7 +119,7 @@ public class ChallengeState extends BotState {
 
     @Override
     public void onExitState() {
-       // qqBot.sendMsgToAllGroups("机器人退出Challenge状态");
+        log.info("bot exit challenge state groupId is {0}", groupId);
     }
 
 

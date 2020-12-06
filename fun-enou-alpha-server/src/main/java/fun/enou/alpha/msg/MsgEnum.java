@@ -17,8 +17,14 @@ public enum MsgEnum {
 	ACCOUNT_OR_PWD_WRONG(10102),
 	
 	
-	//about word, start from 20000 to 21000
+	//about word, range is [20000, 21000)
 	WORD_NOT_FOUND(20001),
+	WORD_DEF_LIST_PARSE_FAIL(20002),
+
+
+
+	//related to article, range is [21000, 22000]
+	ARTICLE_NOT_FOUND(21001),
 	;
 	private Integer code;
 	

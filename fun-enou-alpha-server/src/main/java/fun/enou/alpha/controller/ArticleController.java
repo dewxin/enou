@@ -3,6 +3,7 @@ package fun.enou.alpha.controller;
 import fun.enou.alpha.dto.dtoweb.DtoWebArticle;
 import fun.enou.alpha.service.IArticleService;
 import fun.enou.core.msg.AutoWrapMsg;
+import fun.enou.core.msg.EnouMessageException;
 
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -20,7 +21,7 @@ public class ArticleController {
     @Autowired
     IArticleService articleService;
 
-    ///  todo token logic  multi database, put the user logic in a single database.
+    /// todo token logic multi database, put the user logic in a single database.
     // https://blog.csdn.net/qq_37345604/article/details/89377105#comments
 
     /**
@@ -33,19 +34,17 @@ public class ArticleController {
         articleService.saveArticle(article);
     }
 
-
-    //todo return value too huge, need to reduce
+    // todo return value too huge, need to reduce
     @GetMapping
-    public ResponseEntity<List<DtoWebArticle>> getArticle() {
+    public ResponseEntity<List<DtoWebArticle>> getArticle(@RequestParam("pageIndex") int pageIndex) {
 
-        List<DtoWebArticle> articles = articleService.getArticles(0, 10);
+        List<DtoWebArticle> articles = articleService.getArticles(pageIndex, 10);
         return ResponseEntity.ok(articles);
     }
 
-
     @GetMapping("/{articleId}/unkownword")
-    public void getArticleUnknownWords(@PathVariable("articleId") Long id) {
-    //todo analyze which words user have not learned,
-    // and show them the meaning.
+    public ResponseEntity<List<String>> parseUnknownWords(@PathVariable("articleId") Long id) throws EnouMessageException {
+        List<String> resultList = articleService.parseUnknownWords(id);
+        return ResponseEntity.ok(resultList);
     }
 }

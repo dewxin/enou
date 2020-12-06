@@ -37,6 +37,7 @@ public class WordChallenge {
 	}
 
 	public OneChallenge getOneChallenge() {
+		if(isOver()) prepare();
 		return challengeList.poll();
 	}
 

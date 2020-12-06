@@ -13,9 +13,8 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import fun.enou.core.msg.EnouMsgJson;
-import fun.enou.feign.generated.auto_client.ApiClient;
 import fun.enou.feign.generated.auto_client.DtoWebWord;
-import fun.enou.feign.generated.auto_client.WordClient;
+import fun.enou.feign.generated.auto_client.AlphaClient;
 
 	//todo
 	//info is stored in the redis, done by the bot thread
@@ -25,23 +24,20 @@ import fun.enou.feign.generated.auto_client.WordClient;
 public class BotController {
 	
 	@Autowired
-	private WordClient wordClient;
-	
-	@Autowired
-	private ApiClient apiClient;
+	private AlphaClient alphaClient;
 	
 
 	@GetMapping("/word/random") 
 	public String getOneRandomWord(){
 
-    	EnouMsgJson<String> strEntity = wordClient.getOneRandomWord();
+    	EnouMsgJson<String> strEntity = alphaClient.getOneRandomWord();
 
     	return strEntity.getData();
 	}
 	
 	@GetMapping("/word/{word}/def")
 	public String getWordDef(@PathVariable String word) {
-		DtoWebWord webWord = apiClient.getWordInfo(word);
+		DtoWebWord webWord = alphaClient.getWordInfo(word).getData();
 		
 		ObjectMapper objectMapper = new ObjectMapper();
 		String def = "";
@@ -58,7 +54,7 @@ public class BotController {
 	@GetMapping("/word")
 	public String getWordPronounce(@RequestParam String word) {
 		
-		DtoWebWord webWord = apiClient.getWord(word);
+		DtoWebWord webWord = alphaClient.getWord(word).getData();
 		
 		ObjectMapper objectMapper = new ObjectMapper();
 		String def = "";
@@ -74,7 +70,7 @@ public class BotController {
 	
 	public List<DtoWebWord> getRandomWord(Integer count) {
 		
-		return  apiClient.getRandomWord(count);
+		return  alphaClient.getRandomWord(count).getData();
 	}
 	
 	

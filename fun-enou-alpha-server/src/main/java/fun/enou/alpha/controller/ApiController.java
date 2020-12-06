@@ -12,10 +12,12 @@ import org.springframework.web.bind.annotation.RestController;
 
 import fun.enou.alpha.dto.dtoweb.DtoWebWord;
 import fun.enou.alpha.service.IWordService;
+import fun.enou.core.msg.AutoWrapMsg;
 import fun.enou.core.msg.EnouMessageException;
 
 @RestController
 @RequestMapping("/api")
+@AutoWrapMsg
 public class ApiController {
 	
 	

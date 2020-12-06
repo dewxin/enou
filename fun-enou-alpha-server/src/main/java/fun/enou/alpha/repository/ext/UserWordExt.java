@@ -1,18 +1,10 @@
 package fun.enou.alpha.repository.ext;
 
+import java.util.List;
 
-import fun.enou.alpha.dto.dtodb.DtoDbUserWord;
-
-/**
- * @Author: nagi
- * @Modified By:
- * @Date Created in 2020-10-05 16:26
- * @Description:
- * @Attention:
- */
+import fun.enou.alpha.dto.dtodb.ext.DtoDbUserWord;
 
 public interface UserWordExt {
-    void update(DtoDbUserWord dbUserWord);
-    
-    DtoDbUserWord findOneRandom();
+       void save(DtoDbUserWord dbUserWord);
+       List<Integer> getAllWordList(Long userId);
 }

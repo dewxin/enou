@@ -4,6 +4,7 @@ import redis.clients.jedis.Jedis;
 import redis.clients.jedis.JedisPool;
 import redis.clients.jedis.JedisPoolConfig;
 
+//todo one thread can only get one jedis for one redis instance.
 public class RedisManager {
 	
 	JedisPool jedisPool;

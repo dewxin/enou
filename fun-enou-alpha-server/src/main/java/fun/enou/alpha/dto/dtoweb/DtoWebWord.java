@@ -3,23 +3,22 @@ package fun.enou.alpha.dto.dtoweb;
 import java.util.LinkedList;
 import java.util.List;
 
-import com.google.common.collect.Lists;
-
 import fun.enou.alpha.dto.dtodb.DtoDbDictDef;
 import fun.enou.alpha.dto.dtodb.DtoDbDictWord;
-import fun.enou.alpha.dto.dtodb.DtoDbDictDef;
 
 public class DtoWebWord {
 	
 	private Integer id;
 
 	private String spell;
+
+	private String linkWord;
 	
 	private String pronounce;
 	
 	private String usPronounce;
 	
-	private List<DtoDbDictDef> definitionList = new LinkedList<DtoDbDictDef>();
+	private List<DtoDbDictDef> definitionList = new LinkedList<>();
 
 	public DtoWebWord() {}
 	
@@ -83,6 +82,14 @@ public class DtoWebWord {
 
 	public void setDefinitionList(List<DtoDbDictDef> definitionList) {
 		this.definitionList = definitionList;
+	}
+
+	public String getLinkWord() {
+		return linkWord;
+	}
+
+	public void setLinkWord(String linkWord) {
+		this.linkWord = linkWord;
 	}
 
 	

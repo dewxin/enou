@@ -26,6 +26,7 @@ import net.mamoe.mirai.contact.Group;
 import net.mamoe.mirai.event.Events;
 import net.mamoe.mirai.utils.BotConfiguration;
 import net.mamoe.mirai.utils.BotConfiguration.MiraiProtocol;
+import redis.clients.jedis.Jedis;
 
 @Component
 @Slf4j
@@ -96,7 +97,9 @@ public class QQBot {
 		
 		bot.login();
 		log.info("{} bot login succeed", bot.getNick());
-		redisManager.getJedis().set("bot", bot.getId() + bot.getNick());
+		try(Jedis jedis = redisManager.getJedis()) {
+			jedis.set("bot", bot.getId() + bot.getNick());
+		}
 	}
 	
 	public void registerEvents() {
@@ -160,7 +163,7 @@ public class QQBot {
 	}
 
 	
-	private void sendMsgToDevGroups(String message) {
+	public void sendMsgToDevGroups(String message) {
         ContactList<Group> groupList = getBot().getGroups();
         
         for(Group group: groupList) {

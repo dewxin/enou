@@ -21,7 +21,7 @@ public class DtoDbArticle {
     }
 
     public DtoWebArticle toDtoWeb() {
-        return new DtoWebArticle(title, content);
+        return new DtoWebArticle(id, title, content);
     }
 
     public Long getId() {
