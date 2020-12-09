@@ -6,8 +6,6 @@ import org.springframework.cloud.client.discovery.EnableDiscoveryClient;
 import org.springframework.context.annotation.EnableAspectJAutoProxy;
 import org.springframework.scheduling.annotation.EnableScheduling;
 
-//todo support qq message
-// https://github.com/skyrocketingHong/Bot.QQ/
 
 @SpringBootApplication
 @EnableAspectJAutoProxy

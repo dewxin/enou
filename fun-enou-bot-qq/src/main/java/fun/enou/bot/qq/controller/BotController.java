@@ -11,21 +11,18 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.github.dewxin.generated.auto_client.AlphaClient;
+import com.github.dewxin.generated.auto_client.DtoWebWord;
 
 import fun.enou.core.msg.EnouMsgJson;
-import fun.enou.feign.generated.auto_client.DtoWebWord;
-import fun.enou.feign.generated.auto_client.AlphaClient;
 
-	//todo
-	//info is stored in the redis, done by the bot thread
-	//
 @RestController
 @RequestMapping("/bot")
 public class BotController {
 	
 	@Autowired
 	private AlphaClient alphaClient;
-	
+
 
 	@GetMapping("/word/random") 
 	public String getOneRandomWord(){

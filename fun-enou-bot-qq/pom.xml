@@ -96,8 +96,8 @@
         </dependency>
         
         <dependency>
-          	<groupId>fun.enou.feign</groupId>
-  			<artifactId>auto-client-service-alpha</artifactId>
+          	<groupId>fun.enou.alpha</groupId>
+            <artifactId>fun-enou-alpha-server-feign</artifactId>
   			<version>0.0.1</version>
         </dependency>
 

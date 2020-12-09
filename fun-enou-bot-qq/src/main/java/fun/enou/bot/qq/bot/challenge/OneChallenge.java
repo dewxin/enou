@@ -4,9 +4,10 @@ import java.text.MessageFormat;
 import java.util.LinkedList;
 import java.util.List;
 
+import com.github.dewxin.generated.auto_client.DtoDbDictDef;
+import com.github.dewxin.generated.auto_client.DtoWebWord;
+
 import fun.enou.core.tool.RandomUtil;
-import fun.enou.feign.generated.auto_client.DtoDbDictDef;
-import fun.enou.feign.generated.auto_client.DtoWebWord;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
