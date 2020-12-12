@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import fun.enou.alpha.dto.dtoweb.DtoWebWord;
+import fun.enou.alpha.dto.dtoweb.DtoWebWordList;
 import fun.enou.alpha.service.IWordService;
 import fun.enou.core.msg.AutoWrapMsg;
 import fun.enou.core.msg.EnouMessageException;
@@ -37,9 +38,11 @@ public class ApiController {
 	}
 	
 	@GetMapping("/word/random")
-	public ResponseEntity<List<DtoWebWord>> getRandomWord(@RequestParam(value = "count") Integer count) throws EnouMessageException {
+	public ResponseEntity<DtoWebWordList> getRandomWord(@RequestParam(value = "count") Integer count) throws EnouMessageException {
 		
-		List<DtoWebWord> wordList = wordService.getWebWordList(count);
+		List<DtoWebWord> list = wordService.getWebWordList(count);
+		DtoWebWordList wordList = new DtoWebWordList();
+		wordList.setDtoWebWordList(list);
 
 		return ResponseEntity.ok(wordList);
 	}

@@ -67,7 +67,7 @@ public class BotController {
 	
 	public List<DtoWebWord> getRandomWord(Integer count) {
 		
-		return  alphaClient.getRandomWord(count).getData();
+		return  alphaClient.getRandomWord(count).getData().getDtoWebWordList();
 	}
 	
 	
