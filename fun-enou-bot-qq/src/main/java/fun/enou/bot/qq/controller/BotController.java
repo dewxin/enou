@@ -62,7 +62,6 @@ public class BotController {
 		}
 
 		return def;
-		
 	}
 	
 	public List<DtoWebWord> getRandomWord(Integer count) {

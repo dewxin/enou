@@ -16,5 +16,10 @@ public class SheduleTask {
     public void botSendNotcie() {
     	bot.sendEnouWordNotice();
     }
+
+    @Scheduled(cron = "0 0 6-23 * * ?")
+    public void botSendGroupAdMessage() {
+        bot.trySendGroupAdMessage();
+    }
     
 }

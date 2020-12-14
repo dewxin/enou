@@ -25,6 +25,10 @@ public class ChallengeState extends BotState {
     private OneChallenge currentChallenge;
     private Timer challengeTimer;
 
+    public ChallengeState() {
+        state = "challenge";
+    }
+
     @Override
     public ListeningStatus handleGroupMessage(GroupMessageEvent event) {
         String msg = event.getMessage().contentToString();
@@ -48,7 +52,7 @@ public class ChallengeState extends BotState {
     public void onEnterState() {
         log.info("bot enter challenge state groupId is {0}", groupId);;
         currentChallenge = WordChallenge.instance().getOneChallenge();
-        qqBot.getBot().getGroup(groupId).sendMessage("请听题:");
+        qqBot.getBot().getGroup(groupId).sendMessage("请听题:   Attention:");
         qqBot.getBot().getGroup(groupId).sendMessage(currentChallenge.getQuestion());
         for(String option : currentChallenge.getOptionList()) {
             qqBot.getBot().getGroup(groupId).sendMessage(option);
@@ -61,7 +65,7 @@ public class ChallengeState extends BotState {
             public void run () {
                 try {
                     challengeOver();
-                    qqBot.getBot().getGroup(groupId).sendMessage("居然没有人能解答出我的问题，人生真是寂寞如雪啊~");
+                    qqBot.getBot().getGroup(groupId).sendMessage("居然没有人能解答出我的问题，人生真是寂寞如雪啊~  Even the rain man can solve this, hmmm ");
                 } catch (Exception e) {
                     log.warn(e.getMessage());
                 } 
