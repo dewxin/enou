@@ -118,6 +118,15 @@ public class QQBot {
 		tmpUser.sendMessage(message);
 		tmpUser.sendMessage("快登录http://www.enou.fun复习一下单词吧。");
 	}
+
+	public void trySendGroupAdMessage() {
+		for(BotState botState :stateMap.values()){
+			if(botState instanceof IdleState) {
+				IdleState idleState = (IdleState) botState;
+				idleState.trySendAdSchedule();
+			}
+		}
+	}
 	
 	public void enterChallengeState(Long groupId) {
 		ChallengeState state = ChallengeState.newInstance(this, groupId);
@@ -131,6 +140,9 @@ public class QQBot {
 
 	private void enterState(Long groupId, BotState botState) {
 		BotState prevState = getGroupState(groupId);
+		if(prevState.getState().equals(botState.getState())){
+			return;
+		}
 		if(prevState != null){
 			prevState.onExitState();
 		}
@@ -151,6 +163,10 @@ public class QQBot {
         for(Group group: groupList) {
             group.sendMessage(message);
         }
+	}
+
+	public void sendMsgToGroup(String message, Long groupId) {
+		getBot().getGroup(groupId).sendMessage(message);
 	}
 
 	private boolean isDevProfile() {

@@ -8,6 +8,7 @@ public abstract class BotState {
 
     protected QQBot qqBot;
     protected Long groupId;
+    protected String state;
     
     public void setBot(QQBot qqBot) {
         this.qqBot = qqBot;
@@ -25,7 +26,17 @@ public abstract class BotState {
         this.groupId = groupId;
     }
 
+    public String getState() {
+        return state;
+    }
+
+    public void setState(String stateVal) {
+        state = stateVal;
+    }
+
     public abstract ListeningStatus handleGroupMessage(GroupMessageEvent event);
     public abstract void onEnterState();
     public abstract void onExitState();
+
+
 }

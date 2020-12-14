@@ -5,6 +5,7 @@ import java.util.List;
 import fun.enou.bot.qq.bot.QQBot;
 import fun.enou.bot.qq.bot.utils.CommonUtil;
 import lombok.extern.slf4j.Slf4j;
+import net.mamoe.mirai.event.Event;
 import net.mamoe.mirai.event.ListeningStatus;
 import net.mamoe.mirai.message.GroupMessageEvent;
 
@@ -18,16 +19,25 @@ import net.mamoe.mirai.message.GroupMessageEvent;
 @Slf4j
 public class IdleState extends BotState {
 
+    //repeat message
     private String botLastSendMessage = "";
     private String lastMessage = "";
-    private double ratePercent = 0;
+    private double repeatRatePercent = 0;
 
+    //ad
+    private final String adMessage = "发送“出题”两字，即可测试词汇量。 send 'ask', you can test wheather your IQ above average.";
+    private double sendAdRate = 0;
 
+    
     public static IdleState newInstance(QQBot bot, Long groupId) {
         IdleState state = new IdleState();
         state.setBot(bot);
         state.setGroupId(groupId);
         return state;
+    }
+
+    public IdleState() {
+        state = "idle";
     }
 
     public String getLastMessage() {
@@ -47,11 +57,11 @@ public class IdleState extends BotState {
     }
 
     public double getRatePercent() {
-        return ratePercent;
+        return repeatRatePercent;
     }
 
     public void setRatePercent(double ratePercent) {
-        this.ratePercent = ratePercent;
+        this.repeatRatePercent = ratePercent;
     }
 
     @Override
@@ -65,19 +75,10 @@ public class IdleState extends BotState {
 			return ListeningStatus.LISTENING;
         }
         
-        String content = event.getMessage().contentToString();
-        if (getLastMessage().equals(content) && !getBotLastSentMessage().equals(content)) {
-            setRatePercent(getRatePercent() + 0.1);
-        } else {
-            setRatePercent(0);
-            setLastMessage(content);
-        }
 
-        if (CommonUtil.randomYes(getRatePercent())) {
-            setBotLastSentMessage(getLastMessage());
-            event.getGroup().sendMessage(getLastMessage());
-            setRatePercent(0);
-        }
+        String content = event.getMessage().contentToString();
+        handleRepeate(content, event);
+
 
         if (content.toLowerCase().startsWith("getdef")) {
             String word = content.split(" ")[1];
@@ -91,12 +92,37 @@ public class IdleState extends BotState {
             }
         }
 
-        if(content.startsWith("出题")) {
+        if(content.startsWith("出题") || content.startsWith("ask")) {
             qqBot.enterChallengeState(groupId);
         }
 
 
         return ListeningStatus.LISTENING;
+    }
+
+    private void handleRepeate(String content, GroupMessageEvent event) {
+
+        if (getLastMessage().equals(content) && !getBotLastSentMessage().equals(content)) {
+            setRatePercent(getRatePercent() + 0.1);
+        } else {
+            setRatePercent(0);
+            setLastMessage(content);
+        }
+
+        if (CommonUtil.randomYes(getRatePercent())) {
+            setBotLastSentMessage(getLastMessage());
+            event.getGroup().sendMessage(getLastMessage());
+            setRatePercent(0);
+        }
+    }
+
+    public void trySendAdSchedule() {
+        sendAdRate += 0.1;
+        if(CommonUtil.randomYes(sendAdRate)){
+            qqBot.sendMsgToGroup(adMessage, groupId);
+            sendAdRate = 0;
+        }
+
     }
 
     @Override
