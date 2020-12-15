@@ -13,7 +13,7 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 public class OneChallenge {
 
-	private final String PREFIX ="请选出符合定义的单词，Please choose the right option";
+	private final String PREFIX ="请选出符合定义的单词 Please choose the right option, ";
 	private String definition;
 	
 	private List<String> optionList = new LinkedList<>();
@@ -31,7 +31,7 @@ public class OneChallenge {
 
 	public String getExplanation() {
 		return MessageFormat.format(
-			"正确答案是 The right answer is{0}, {1} {2}", answer, answerDef.getPhrase(), answerDef.getExample());
+			"正确答案是 The right answer is {0}, {1} {2}", answer, answerDef.getPhrase(), answerDef.getExample());
 	}
 	
 	private void parse(List<DtoWebWord> wordList) {

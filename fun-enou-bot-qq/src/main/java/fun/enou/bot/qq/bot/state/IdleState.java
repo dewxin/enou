@@ -27,6 +27,8 @@ public class IdleState extends BotState {
     //ad
     private final String adMessage = "发送“出题”两字，即可测试词汇量。 send 'ask', you can test wheather your IQ above average.";
     private double sendAdRate = 0;
+    private long lastTimeSendAd = 0;
+    private long hourInterval = 24;
 
     
     public static IdleState newInstance(QQBot bot, Long groupId) {
@@ -117,10 +119,16 @@ public class IdleState extends BotState {
     }
 
     public void trySendAdSchedule() {
-        sendAdRate += 0.1;
-        if(CommonUtil.randomYes(sendAdRate)){
+
+        boolean intervalOK = (System.currentTimeMillis() - lastTimeSendAd) > (hourInterval * 60 * 60 * 1000);
+        if(!intervalOK)
+            return;
+
+        sendAdRate += 0.05;
+        if(CommonUtil.randomYes(sendAdRate)) {
             qqBot.sendMsgToGroup(adMessage, groupId);
             sendAdRate = 0;
+            lastTimeSendAd = System.currentTimeMillis();
         }
 
     }

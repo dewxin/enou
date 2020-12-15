@@ -10,6 +10,7 @@ import java.util.Optional;
 import java.util.Random;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import redis.clients.jedis.Jedis;
 import org.springframework.stereotype.Service;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -23,6 +24,7 @@ import fun.enou.alpha.msg.MsgEnum;
 import fun.enou.alpha.repository.DictDefRepository;
 import fun.enou.alpha.repository.DictWordRepository;
 import fun.enou.core.msg.EnouMessageException;
+import fun.enou.core.redis.RedisManager;
 import fun.enou.core.tool.RandomUtil;
 import lombok.extern.slf4j.Slf4j;
 
@@ -35,6 +37,9 @@ public class TWordService implements IWordService{
 	
 	@Autowired
 	private DictDefRepository defRepository;
+
+	@Autowired
+	private RedisManager redisManager;
 
 	@Override
 	public void uploadWord(DtoWebWord webWord) {
@@ -112,6 +117,12 @@ public class TWordService implements IWordService{
 			Integer id = (int) (RandomUtil.randomLong() % wordCountLong);
 			if(!wordIdSet.contains(id))
 				wordIdSet.add(id);
+		}
+
+        try(Jedis jedis = redisManager.getJedis()) {
+
+			//todo jedis doesn't support hash random member.
+			// so  we need modify the redis code 
 		}
 
 		for(Integer id : wordIdSet) {

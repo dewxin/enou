@@ -1,6 +1,8 @@
 package fun.enou.bot.qq.bot.state;
 
 import java.text.MessageFormat;
+import java.util.LinkedList;
+import java.util.List;
 import java.util.Timer;
 import java.util.TimerTask;
 
@@ -52,11 +54,11 @@ public class ChallengeState extends BotState {
     public void onEnterState() {
         log.info("bot enter challenge state groupId is {0}", groupId);;
         currentChallenge = WordChallenge.instance().getOneChallenge();
-        qqBot.getBot().getGroup(groupId).sendMessage("请听题:   Attention:");
+        qqBot.getBot().getGroup(groupId).sendMessage("请听题:   Attention: ");
         qqBot.getBot().getGroup(groupId).sendMessage(currentChallenge.getQuestion());
-        for(String option : currentChallenge.getOptionList()) {
-            qqBot.getBot().getGroup(groupId).sendMessage(option);
-        }
+
+        String allOptions = String.join("\r\n", currentChallenge.getOptionList());
+        qqBot.getBot().getGroup(groupId).sendMessage(allOptions);
 
         challengeTimer = new Timer(true);
         challengeTimer.schedule(new TimerTask(){
