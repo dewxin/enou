@@ -52,7 +52,7 @@ public class ChallengeState extends BotState {
 
     @Override
     public void onEnterState() {
-        log.info("bot enter challenge state groupId is {0}", groupId);;
+        log.info("bot enter challenge state groupId is {}", groupId);;
         currentChallenge = WordChallenge.instance().getOneChallenge();
         qqBot.getBot().getGroup(groupId).sendMessage("请听题:   Attention: ");
         qqBot.getBot().getGroup(groupId).sendMessage(currentChallenge.getQuestion());

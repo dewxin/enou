@@ -124,7 +124,7 @@ public class IdleState extends BotState {
         if(!intervalOK)
             return;
 
-        sendAdRate += 0.05;
+        sendAdRate += 0.03;
         if(CommonUtil.randomYes(sendAdRate)) {
             qqBot.sendMsgToGroup(adMessage, groupId);
             sendAdRate = 0;

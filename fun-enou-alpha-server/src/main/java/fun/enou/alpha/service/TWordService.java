@@ -2,6 +2,7 @@ package fun.enou.alpha.service;
 
 import static org.hamcrest.CoreMatchers.containsString;
 
+import java.text.MessageFormat;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.LinkedList;
@@ -109,29 +110,23 @@ public class TWordService implements IWordService{
 	public List<DtoWebWord> getWebWordList(int count) throws EnouMessageException {
 		
 		List<DtoWebWord> resultList = new LinkedList<>();
-		long wordCountLong = wordRepository.count();
 		
-		HashSet<Integer> wordIdSet = new HashSet<>();
-		while(wordIdSet.size() < count) {
-
-			Integer id = (int) (RandomUtil.randomLong() % wordCountLong);
-			if(!wordIdSet.contains(id))
-				wordIdSet.add(id);
-		}
-
         try(Jedis jedis = redisManager.getJedis()) {
 
-			//todo jedis doesn't support hash random member.
-			// so  we need modify the redis code 
-		}
+			String keyName = "wordIdToSpell";
+			String script = MessageFormat.format("return redis.call(''hrandmember'', ''{0}'', {1})", keyName, count);
 
-		for(Integer id : wordIdSet) {
-			Optional<DtoDbDictWord> dbDictWordOptional = wordRepository.findById(id);
-			if(!dbDictWordOptional.isPresent())
-				continue;
+			List<Object> keyValueList = (List<Object>)(jedis.eval(script));
+			for(int i = 0; i< keyValueList.size(); i+=2){
+				int id = Integer.parseInt(keyValueList.get(i).toString());
+				Optional<DtoDbDictWord> dbDictWordOptional = wordRepository.findById(id);
+				if(!dbDictWordOptional.isPresent())
+					continue;
 			
-			DtoWebWord word = getWebWordByDictWord(dbDictWordOptional.get());
-			resultList.add(word);
+				DtoWebWord word = getWebWordByDictWord(dbDictWordOptional.get());
+				resultList.add(word);
+			}
+
 		}
 		
 		return resultList;

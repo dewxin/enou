@@ -41,7 +41,7 @@ public class OneChallenge {
 			if(i == index) {
 				answer = option;
 				List<DtoDbDictDef> defList = wordList.get(i).getDefinitionList();
-				if(defList.isEmpty()) {
+				if(defList == null || defList.isEmpty()) {
 					log.warn("{0} defList is empty", wordList.get(i).getSpell());
 					continue;
 				}
