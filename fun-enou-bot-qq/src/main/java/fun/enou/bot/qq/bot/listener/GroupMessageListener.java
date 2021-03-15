@@ -28,7 +28,7 @@ public class GroupMessageListener extends SimpleListenerHost {
 	public ListeningStatus onMessage(GroupMessageEvent event)  {
 
 		Long groupId = event.getGroup().getId();
-		return qqBot.getGroupState(groupId).handleGroupMessage(event);
+		return qqBot.getGroupStates(groupId).handleGroupMessage(event);
 
 	}
 

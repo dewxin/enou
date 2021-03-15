@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="fun.enou.statistic.repository.ext.WordChalAnswerExt">
+    <insert id="pileUp" parameterType="fun.enou.statistic.dto.dtodb.DtoDbChalAnswerCount">
+		insert into word_challenge_answer (id, spell, correct_count, wrong_count)
+		values (#{id}, #{wordSpell}, #{rightOptionCount}, #{falseOptionCount})
+		on duplicate key 
+		update correct_count=#{rightOptionCount}+values(correct_count),
+               wrong_count=#{falseOptionCount}+values(wrong_count)
+    </insert>
+
+
+</mapper>

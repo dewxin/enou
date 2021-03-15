@@ -17,7 +17,9 @@ import net.mamoe.mirai.message.GroupMessageEvent;
  * @Attention:
  */
 @Slf4j
-public class IdleState extends BotState {
+public class IdleState extends GroupState {
+
+    public static final String STATE_STR = "idle";
 
     //repeat message
     private String botLastSendMessage = "";
@@ -27,8 +29,8 @@ public class IdleState extends BotState {
     //ad
     private final String adMessage = "发送“出题”两字，即可测试词汇量。 send 'ask', you can test wheather your IQ above average.";
     private double sendAdRate = 0;
-    private long lastTimeSendAd = 0;
-    private long hourInterval = 24;
+    private long lastTimeSendAdOrEnterChalState = 0;
+    private long hourInterval = 24 * 7;
 
     
     public static IdleState newInstance(QQBot bot, Long groupId) {
@@ -36,10 +38,6 @@ public class IdleState extends BotState {
         state.setBot(bot);
         state.setGroupId(groupId);
         return state;
-    }
-
-    public IdleState() {
-        state = "idle";
     }
 
     public String getLastMessage() {
@@ -98,7 +96,6 @@ public class IdleState extends BotState {
             qqBot.enterChallengeState(groupId);
         }
 
-
         return ListeningStatus.LISTENING;
     }
 
@@ -120,7 +117,7 @@ public class IdleState extends BotState {
 
     public void trySendAdSchedule() {
 
-        boolean intervalOK = (System.currentTimeMillis() - lastTimeSendAd) > (hourInterval * 60 * 60 * 1000);
+        boolean intervalOK = (System.currentTimeMillis() - lastTimeSendAdOrEnterChalState) > (hourInterval * 60 * 60 * 1000);
         if(!intervalOK)
             return;
 
@@ -128,23 +125,29 @@ public class IdleState extends BotState {
         if(CommonUtil.randomYes(sendAdRate)) {
             qqBot.sendMsgToGroup(adMessage, groupId);
             sendAdRate = 0;
-            lastTimeSendAd = System.currentTimeMillis();
+            lastTimeSendAdOrEnterChalState = System.currentTimeMillis();
         }
 
     }
 
     @Override
-    public void onEnterState() {
+    public void onEnterState(GroupState oldState) {
         log.info("bot enter idle state groupId is {0}", groupId);
-        //qqBot.sendMsgToDevGroups("机器人进入Idle状态 groupId is " + groupId);
     }
 
     @Override
-    public void onExitState() {
+    public void onExitState(GroupState newState) {
         log.info("bot exit idle state groupId is {0}", groupId);
-        //qqBot.sendMsgToDevGroups("机器人退出Idle状态 groupId is " + groupId);
+
+        if(newState instanceof ChallengeState) {
+            lastTimeSendAdOrEnterChalState = System.currentTimeMillis();
+        }
     }
 
+	@Override
+	public String getStateStr() {
+		return STATE_STR;
+	}
 
 
 }

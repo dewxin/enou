@@ -11,9 +11,7 @@ import fun.enou.bot.qq.bot.challenge.WordChallenge;
 import fun.enou.bot.qq.bot.listener.FriendEventListener;
 import fun.enou.bot.qq.bot.listener.FriendMessageListener;
 import fun.enou.bot.qq.bot.listener.GroupMessageListener;
-import fun.enou.bot.qq.bot.state.IdleState;
-import fun.enou.bot.qq.bot.state.BotState;
-import fun.enou.bot.qq.bot.state.ChallengeState;
+import fun.enou.bot.qq.bot.state.GroupStates;
 import fun.enou.bot.qq.config.BotProperty;
 import fun.enou.bot.qq.controller.BotController;
 import fun.enou.core.redis.RedisManager;
@@ -35,7 +33,8 @@ public class QQBot {
 	private Bot bot;
 	private Friend tmpUser;
 
-	private HashMap<Long, BotState> stateMap = new HashMap<>();
+	//due to the lack of memory , this field needs to be reset sometimes.
+	private HashMap<Long, GroupStates> groupIdToStateMap = new HashMap<>();
 	
 	@Autowired
 	private ApplicationContext context;
@@ -48,21 +47,13 @@ public class QQBot {
 	@Autowired
 	private BotController botController;
 	
-	public BotState getGroupState(Long groupId) {
-		if(!stateMap.containsKey(groupId)) {
-			stateMap.put(groupId, IdleState.newInstance(this, groupId));
+	public GroupStates getGroupStates(Long groupId) {
+		if(!groupIdToStateMap.containsKey(groupId)) {
+			groupIdToStateMap.put(groupId, GroupStates.newInstance(this, groupId));
 		}
-		return stateMap.get(groupId);
+		return groupIdToStateMap.get(groupId);
 	}
 
-	public void setGroupState(Long groupId, BotState botState) {
-		if(!stateMap.containsKey(groupId)) {
-			stateMap.put(groupId, IdleState.newInstance(this, groupId));
-			return;
-		}
-
-		stateMap.replace(groupId, botState);
-	}
 
 	public Bot getBot() {
 		return bot;
@@ -78,7 +69,7 @@ public class QQBot {
 
 	public void init() {
 		WordChallenge.instance().setBot(this);
-
+		WordChallenge.instance().prepare();
 	}
 
 	public void createInstanceAndLogin() {
@@ -120,38 +111,21 @@ public class QQBot {
 	}
 
 	public void trySendGroupAdMessage() {
-		for(BotState botState :stateMap.values()){
-			if(botState instanceof IdleState) {
-				IdleState idleState = (IdleState) botState;
-				idleState.trySendAdSchedule();
-			}
+		for(GroupStates groupStates :groupIdToStateMap.values()){
+			groupStates.trySendGroupAdMessage();
 		}
 	}
 	
 	public void enterChallengeState(Long groupId) {
-		ChallengeState state = ChallengeState.newInstance(this, groupId);
-		enterState(groupId, state);
+		GroupStates groupStates = getGroupStates(groupId);
+		groupStates.enterChallengeState();
 	}
 
 	public void enterIdleState(Long groupId) {
-		IdleState state = IdleState.newInstance(this, groupId);
-		enterState(groupId, state);
+		GroupStates groupStates = getGroupStates(groupId);
+		groupStates.enterIdleState();
 	}
 
-	private void enterState(Long groupId, BotState botState) {
-		BotState prevState = getGroupState(groupId);
-		if(prevState.getState().equals(botState.getState())){
-			return;
-		}
-		if(prevState != null){
-			prevState.onExitState();
-		}
-
-		setGroupState(groupId, botState);
-
-		botState.onEnterState();
-	}
-	
 	public void sendMsgToAllGroups(String message) {
 		if(isDevProfile()) {
 			sendMsgToDevGroups(message);

@@ -101,6 +101,12 @@
   			<version>0.0.1</version>
         </dependency>
 
+        <dependency>
+          	<groupId>fun.enou.alpha</groupId>
+            <artifactId>fun-enou-statistic-server-feign</artifactId>
+  			<version>0.0.1</version>
+        </dependency>
+
         
         <dependency>
         	<groupId>fun.enou.alpha</groupId>

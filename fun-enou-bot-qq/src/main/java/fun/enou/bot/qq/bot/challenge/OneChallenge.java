@@ -1,6 +1,7 @@
 package fun.enou.bot.qq.bot.challenge;
 
 import java.text.MessageFormat;
+import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -18,11 +19,20 @@ public class OneChallenge {
 	
 	private List<String> optionList = new LinkedList<>();
 	
-	private String answer; // A B C D
+	private ArrayList<String> validAnswerList = new ArrayList<>(); // A B C D
+
+	private String rightAnswer; // one of { A B C D }
+	private DtoWebWord rightAnswerWord;
 	private DtoDbDictDef answerDef;
 
 	public boolean isTrueAnswer(String answer) {
-		return this.answer.equals(answer);
+		answer = answer.toUpperCase();
+		return this.rightAnswer.equals(answer);
+	}
+
+	public boolean isValidAnswer(String answer) {
+		answer = answer.toUpperCase();
+		return this.validAnswerList.contains(answer);
 	}
 
 	public String getQuestion() {
@@ -31,15 +41,16 @@ public class OneChallenge {
 
 	public String getExplanation() {
 		return MessageFormat.format(
-			"正确答案是 The right answer is {0}, {1} {2}", answer, answerDef.getPhrase(), answerDef.getExample());
+			"正确答案是 The right answer is {0}, {1} {2}", rightAnswer, answerDef.getPhrase(), answerDef.getExample());
 	}
 	
 	private void parse(List<DtoWebWord> wordList) {
 		int index = RandomUtil.randomInt(wordList.size());
 		for(int i = 0; i < wordList.size(); ++i) {
 			String option = String.valueOf((char)('A'+i));
+			validAnswerList.add(option);
 			if(i == index) {
-				answer = option;
+				rightAnswer = option;
 				List<DtoDbDictDef> defList = wordList.get(i).getDefinitionList();
 				if(defList == null || defList.isEmpty()) {
 					log.warn("{0} defList is empty", wordList.get(i).getSpell());
@@ -48,6 +59,7 @@ public class OneChallenge {
 				int defIndex = RandomUtil.randomInt(defList.size());
 				answerDef = defList.get(defIndex);
 				definition = answerDef.getDef();
+				rightAnswerWord = wordList.get(i);
 			}
 			
 			optionList.add(option + ". " + wordList.get(i).getSpell());
@@ -78,13 +90,19 @@ public class OneChallenge {
 	}
 
 	public String getAnswer() {
-		return answer;
+		return rightAnswer;
 	}
 
 	public void setAnswer(String answer) {
-		this.answer = answer;
+		this.rightAnswer = answer;
 	}
-	
-	
+
+	public DtoWebWord getRightAnswerWord() {
+		return rightAnswerWord;
+	}
+
+	public void setRightAnswerWord(DtoWebWord rightAnswerWord) {
+		this.rightAnswerWord = rightAnswerWord;
+	}
 	
 }

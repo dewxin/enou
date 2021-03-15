@@ -1,4 +1,4 @@
-package fun.enou.alpha.config;
+package fun.enou.statistic.config;
 
 import org.apache.ibatis.session.SqlSessionFactory;
 import org.mybatis.spring.SqlSessionFactoryBean;
