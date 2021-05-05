@@ -119,9 +119,12 @@ public class TWordService implements IWordService{
 			List<Object> keyValueList = (List<Object>)(jedis.eval(script));
 			for(int i = 0; i< keyValueList.size(); i+=2){
 				int id = Integer.parseInt(keyValueList.get(i).toString());
+				String spell = keyValueList.get(i+1).toString();
 				Optional<DtoDbDictWord> dbDictWordOptional = wordRepository.findById(id);
-				if(!dbDictWordOptional.isPresent())
+				if(!dbDictWordOptional.isPresent()) {
+					log.warn("cannot find word in database id {} spell {}", id, spell);
 					continue;
+				}
 			
 				DtoWebWord word = getWebWordByDictWord(dbDictWordOptional.get());
 				resultList.add(word);

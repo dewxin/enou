@@ -14,7 +14,7 @@ import fun.enou.bot.qq.bot.challenge.WordChallenge;
 import lombok.extern.slf4j.Slf4j;
 import net.mamoe.mirai.contact.User;
 import net.mamoe.mirai.event.ListeningStatus;
-import net.mamoe.mirai.message.GroupMessageEvent;
+import net.mamoe.mirai.event.events.GroupMessageEvent;
 
 @Slf4j
 public class ChallengeState extends GroupState {
@@ -29,6 +29,7 @@ public class ChallengeState extends GroupState {
     }
 
     private OneChallenge currentChallenge;
+    private TimerTask challengTimerTask;
     private Timer challengeTimer;
 
     private HashSet<Long> userAlreadyAnswerdSet = new HashSet<>();
@@ -57,6 +58,10 @@ public class ChallengeState extends GroupState {
 
             if(currentChallenge.isTrueAnswer(msg)) {
                 correctUserList.add(event.getSender());
+                boolean notRun = challengTimerTask.cancel();
+                if(notRun) {
+                    challengeTimer.schedule(new ChallengeOverTask(this), 1000l*1);
+                }
             } else {
                 wrongUserList.add(event.getSender());
             }
@@ -83,19 +88,8 @@ public class ChallengeState extends GroupState {
         qqBot.getBot().getGroup(groupId).sendMessage(allOptions);
 
         challengeTimer = new Timer(true);
-        challengeTimer.schedule(new TimerTask(){
-
-            @Override
-            public void run () {
-                try {
-                    challengeOver();
-
-                } catch (Exception e) {
-                    log.warn(e.getMessage());
-                } 
-            }
-
-        }, 1000l*30);
+        challengTimerTask = new ChallengeOverTask(this);
+        challengeTimer.schedule(challengTimerTask, 1000l*30);
     }
 
 
@@ -133,4 +127,22 @@ public class ChallengeState extends GroupState {
         return STATE_STR;
 	}
 
+
+    private class ChallengeOverTask extends TimerTask {
+
+        private ChallengeState ownerState;;
+        public ChallengeOverTask(ChallengeState state) {
+            this.ownerState = state;
+        }
+
+        @Override
+        public void run () {
+            try {
+                ownerState.challengeOver();
+
+            } catch (Exception e) {
+                log.warn(e.getMessage());
+            } 
+        }
+    }
 }

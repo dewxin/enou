@@ -2,7 +2,7 @@ package fun.enou.bot.qq.bot.state;
 
 import fun.enou.bot.qq.bot.QQBot;
 import net.mamoe.mirai.event.ListeningStatus;
-import net.mamoe.mirai.message.GroupMessageEvent;
+import net.mamoe.mirai.event.events.GroupMessageEvent;
 
 public abstract class GroupState {
 

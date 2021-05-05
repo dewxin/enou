@@ -17,7 +17,7 @@ import fun.enou.bot.qq.controller.BotController;
 import fun.enou.core.redis.RedisManager;
 import lombok.extern.slf4j.Slf4j;
 import net.mamoe.mirai.Bot;
-import net.mamoe.mirai.BotFactoryJvm;
+import net.mamoe.mirai.BotFactory;
 import net.mamoe.mirai.contact.ContactList;
 import net.mamoe.mirai.contact.Friend;
 import net.mamoe.mirai.contact.Group;
@@ -30,6 +30,8 @@ import redis.clients.jedis.Jedis;
 @Slf4j
 public class QQBot {
 
+	/* FIXME the mirai module we rely on has a real severe bug, will occupying the whole cpu and memory 
+	   when the connection is reset by the remote end. */
 	private Bot bot;
 	private Friend tmpUser;
 
@@ -84,7 +86,7 @@ public class QQBot {
 		BotConfiguration botConfiguration = new BotConfiguration() ;
 		botConfiguration.setProtocol(protocol);
 		botConfiguration.fileBasedDeviceInfo("deviceInfo.json");
-		bot = BotFactoryJvm.newBot(botProperty.getAccount(), botProperty.getPassword(), botConfiguration);
+		bot = BotFactory.INSTANCE.newBot(botProperty.getAccount(), botProperty.getPassword(), botConfiguration);
 		
 		bot.login();
 		log.info("{} bot login succeed", bot.getNick());
@@ -95,9 +97,9 @@ public class QQBot {
 	
 	public void registerEvents() {
 
-		Events.registerEvents(bot, new GroupMessageListener(this));
-		Events.registerEvents(bot, new FriendMessageListener());
-		Events.registerEvents(bot, new FriendEventListener());
+		bot.getEventChannel().registerListenerHost(new GroupMessageListener(this));
+		bot.getEventChannel().registerListenerHost(new FriendMessageListener());
+		bot.getEventChannel().registerListenerHost(new FriendEventListener());
 		tmpUser = bot.getFriend(botProperty.getTmpUser());
 		tmpUser.sendMessage("bot is running");
 		
