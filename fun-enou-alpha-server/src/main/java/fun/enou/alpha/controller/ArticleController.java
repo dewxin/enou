@@ -1,7 +1,7 @@
 package fun.enou.alpha.controller;
 
 import fun.enou.alpha.dto.dtoweb.DtoWebArticle;
-import fun.enou.alpha.service.IArticleService;
+import fun.enou.alpha.service.IGetUnknownWordService;
 import fun.enou.core.msg.AutoWrapMsg;
 import fun.enou.core.msg.EnouMessageException;
 
@@ -19,7 +19,7 @@ import java.util.List;
 @AutoWrapMsg
 public class ArticleController {
     @Autowired
-    IArticleService articleService;
+    IGetUnknownWordService articleService;
 
     /// todo token logic multi database, put the user logic in a single database.
     // https://blog.csdn.net/qq_37345604/article/details/89377105#comments
@@ -44,7 +44,7 @@ public class ArticleController {
 
     @GetMapping("/{articleId}/unkownword")
     public ResponseEntity<List<String>> parseUnknownWords(@PathVariable("articleId") Long id) throws EnouMessageException {
-        List<String> resultList = articleService.parseUnknownWords(id);
+        List<String> resultList = articleService.getUnknownWords(id);
         return ResponseEntity.ok(resultList);
     }
 }

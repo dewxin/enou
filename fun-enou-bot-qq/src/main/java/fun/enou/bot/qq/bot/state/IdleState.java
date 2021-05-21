@@ -80,8 +80,9 @@ public class IdleState extends GroupState {
         handleRepeate(content, event);
 
 
-        if (content.toLowerCase().startsWith("getdef")) {
-            String word = content.split(" ")[1];
+        if (content.toLowerCase().startsWith("define")) {
+            int phraseFirstIndex = content.indexOf(" ", 0);
+            String word = content.substring(phraseFirstIndex+1);
             String result = "";
             try{
                 result = qqBot.getBotController().getWordDef(word);
@@ -92,7 +93,7 @@ public class IdleState extends GroupState {
             }
         }
 
-        if(content.startsWith("出题") || content.startsWith("ask")) {
+        if(content.startsWith("出题") || content.toLowerCase().startsWith("ask")) {
             qqBot.enterChallengeState(groupId);
         }
 
@@ -132,12 +133,12 @@ public class IdleState extends GroupState {
 
     @Override
     public void onEnterState(GroupState oldState) {
-        log.info("bot enter idle state groupId is {0}", groupId);
+        log.info("bot enter idle state groupId is {}", groupId);
     }
 
     @Override
     public void onExitState(GroupState newState) {
-        log.info("bot exit idle state groupId is {0}", groupId);
+        log.info("bot exit idle state groupId is {}", groupId);
 
         if(newState instanceof ChallengeState) {
             lastTimeSendAdOrEnterChalState = System.currentTimeMillis();

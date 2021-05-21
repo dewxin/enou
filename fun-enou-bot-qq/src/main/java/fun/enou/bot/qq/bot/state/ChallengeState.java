@@ -119,7 +119,7 @@ public class ChallengeState extends GroupState {
 
     @Override
     public void onExitState(GroupState newState) {
-        log.info("bot exit challenge state groupId is {0}", groupId);
+        log.info("bot exit challenge state groupId is {}", groupId);
     }
 
 	@Override
