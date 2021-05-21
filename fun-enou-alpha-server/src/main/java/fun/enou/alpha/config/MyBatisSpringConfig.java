@@ -16,6 +16,7 @@ import org.springframework.transaction.annotation.TransactionManagementConfigure
 import javax.sql.DataSource;
 
 /**
+ * todo move this class to core module, because we need it in multi server projects.
  * @Author: nagi
  * @Modified By:
  * @Date Created in 2020-10-05 18:27

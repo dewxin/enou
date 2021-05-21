@@ -2,6 +2,7 @@ package fun.enou.alpha.service;
 
 import static org.hamcrest.CoreMatchers.containsString;
 
+import java.text.MessageFormat;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.LinkedList;
@@ -10,6 +11,7 @@ import java.util.Optional;
 import java.util.Random;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import redis.clients.jedis.Jedis;
 import org.springframework.stereotype.Service;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -23,6 +25,7 @@ import fun.enou.alpha.msg.MsgEnum;
 import fun.enou.alpha.repository.DictDefRepository;
 import fun.enou.alpha.repository.DictWordRepository;
 import fun.enou.core.msg.EnouMessageException;
+import fun.enou.core.redis.RedisManager;
 import fun.enou.core.tool.RandomUtil;
 import lombok.extern.slf4j.Slf4j;
 
@@ -35,6 +38,9 @@ public class TWordService implements IWordService{
 	
 	@Autowired
 	private DictDefRepository defRepository;
+
+	@Autowired
+	private RedisManager redisManager;
 
 	@Override
 	public void uploadWord(DtoWebWord webWord) {
@@ -104,23 +110,26 @@ public class TWordService implements IWordService{
 	public List<DtoWebWord> getWebWordList(int count) throws EnouMessageException {
 		
 		List<DtoWebWord> resultList = new LinkedList<>();
-		long wordCountLong = wordRepository.count();
 		
-		HashSet<Integer> wordIdSet = new HashSet<>();
-		while(wordIdSet.size() < count) {
+        try(Jedis jedis = redisManager.getJedis()) {
 
-			Integer id = (int) (RandomUtil.randomLong() % wordCountLong);
-			if(!wordIdSet.contains(id))
-				wordIdSet.add(id);
-		}
+			String keyName = "wordIdToSpell";
+			String script = MessageFormat.format("return redis.call(''hrandmember'', ''{0}'', {1})", keyName, count);
 
-		for(Integer id : wordIdSet) {
-			Optional<DtoDbDictWord> dbDictWordOptional = wordRepository.findById(id);
-			if(!dbDictWordOptional.isPresent())
-				continue;
+			List<Object> keyValueList = (List<Object>)(jedis.eval(script));
+			for(int i = 0; i< keyValueList.size(); i+=2){
+				int id = Integer.parseInt(keyValueList.get(i).toString());
+				String spell = keyValueList.get(i+1).toString();
+				Optional<DtoDbDictWord> dbDictWordOptional = wordRepository.findById(id);
+				if(!dbDictWordOptional.isPresent()) {
+					log.warn("cannot find word in database id {} spell {}", id, spell);
+					continue;
+				}
 			
-			DtoWebWord word = getWebWordByDictWord(dbDictWordOptional.get());
-			resultList.add(word);
+				DtoWebWord word = getWebWordByDictWord(dbDictWordOptional.get());
+				resultList.add(word);
+			}
+
 		}
 		
 		return resultList;

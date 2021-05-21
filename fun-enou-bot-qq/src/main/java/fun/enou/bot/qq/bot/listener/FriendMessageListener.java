@@ -1,16 +1,14 @@
 package fun.enou.bot.qq.bot.listener;
 
-import kotlin.coroutines.CoroutineContext;
 import net.mamoe.mirai.event.EventHandler;
 import net.mamoe.mirai.event.ListeningStatus;
 import net.mamoe.mirai.event.SimpleListenerHost;
-import net.mamoe.mirai.message.FriendMessageEvent;
-import org.jetbrains.annotations.NotNull;
+import net.mamoe.mirai.event.events.FriendMessageEvent;
 
 
 public class FriendMessageListener extends SimpleListenerHost {
 	@EventHandler
-	public ListeningStatus onMessage(FriendMessageEvent event) throws Exception {
+	public ListeningStatus onMessage(FriendMessageEvent event) {
 		
 //		event.getFriend().getId();
 //
@@ -24,8 +22,5 @@ public class FriendMessageListener extends SimpleListenerHost {
 		return ListeningStatus.LISTENING;
 	}
 	
-	//处理事件处理时抛出的异常
-	@Override
-	public void handleException(@NotNull CoroutineContext context, @NotNull Throwable exception) {
-	}
+
 }

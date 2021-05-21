@@ -2,9 +2,9 @@ package fun.enou.bot.qq.bot.state;
 
 import fun.enou.bot.qq.bot.QQBot;
 import net.mamoe.mirai.event.ListeningStatus;
-import net.mamoe.mirai.message.GroupMessageEvent;
+import net.mamoe.mirai.event.events.GroupMessageEvent;
 
-public abstract class BotState {
+public abstract class GroupState {
 
     protected QQBot qqBot;
     protected Long groupId;
@@ -26,6 +26,9 @@ public abstract class BotState {
     }
 
     public abstract ListeningStatus handleGroupMessage(GroupMessageEvent event);
-    public abstract void onEnterState();
-    public abstract void onExitState();
+    public abstract void onEnterState(GroupState from);
+    public abstract void onExitState(GroupState to);
+
+    public abstract String getStateStr();
+
 }

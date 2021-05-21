@@ -27,12 +27,14 @@ public class ApiController {
 
 	@GetMapping("/word/{word}")
 	public ResponseEntity<DtoWebWord> getWordInfo(@PathVariable String word) throws EnouMessageException {
+		word = word.toLowerCase();
 		DtoWebWord webWord = wordService.getWebWord(word);
 		return ResponseEntity.ok(webWord);
 	}
 	
 	@GetMapping("/word")
 	public ResponseEntity<DtoWebWord> getWord(@RequestParam(value = "word") String word) throws EnouMessageException {
+		word = word.toLowerCase();
 		DtoWebWord webWord = wordService.getWebWord(word);
 		return ResponseEntity.ok(webWord);
 	}

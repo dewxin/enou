@@ -5,8 +5,9 @@ import java.util.List;
 import fun.enou.bot.qq.bot.QQBot;
 import fun.enou.bot.qq.bot.utils.CommonUtil;
 import lombok.extern.slf4j.Slf4j;
+import net.mamoe.mirai.event.Event;
 import net.mamoe.mirai.event.ListeningStatus;
-import net.mamoe.mirai.message.GroupMessageEvent;
+import net.mamoe.mirai.event.events.GroupMessageEvent;
 
 /**
  * @Author: nagi
@@ -16,13 +17,22 @@ import net.mamoe.mirai.message.GroupMessageEvent;
  * @Attention:
  */
 @Slf4j
-public class IdleState extends BotState {
+public class IdleState extends GroupState {
 
+    public static final String STATE_STR = "idle";
+
+    //repeat message
     private String botLastSendMessage = "";
     private String lastMessage = "";
-    private double ratePercent = 0;
+    private double repeatRatePercent = 0;
 
+    //ad
+    private final String adMessage = "发送“出题”两字，即可测试词汇量。 send 'ask', you can test wheather your IQ above average.";
+    private double sendAdRate = 0;
+    private long lastTimeSendAdOrEnterChalState = 0;
+    private long hourInterval = 24 * 7;
 
+    
     public static IdleState newInstance(QQBot bot, Long groupId) {
         IdleState state = new IdleState();
         state.setBot(bot);
@@ -47,11 +57,11 @@ public class IdleState extends BotState {
     }
 
     public double getRatePercent() {
-        return ratePercent;
+        return repeatRatePercent;
     }
 
     public void setRatePercent(double ratePercent) {
-        this.ratePercent = ratePercent;
+        this.repeatRatePercent = ratePercent;
     }
 
     @Override
@@ -65,7 +75,33 @@ public class IdleState extends BotState {
 			return ListeningStatus.LISTENING;
         }
         
+
         String content = event.getMessage().contentToString();
+        handleRepeate(content, event);
+
+
+        if (content.toLowerCase().startsWith("define")) {
+            int phraseFirstIndex = content.indexOf(" ", 0);
+            String word = content.substring(phraseFirstIndex+1);
+            String result = "";
+            try{
+                result = qqBot.getBotController().getWordDef(word);
+            } catch (Exception exception) {
+                result = "找不到单词，或者遇到异常，解析失败" ;
+            } finally {
+                event.getGroup().sendMessage(result);
+            }
+        }
+
+        if(content.startsWith("出题") || content.toLowerCase().startsWith("ask")) {
+            qqBot.enterChallengeState(groupId);
+        }
+
+        return ListeningStatus.LISTENING;
+    }
+
+    private void handleRepeate(String content, GroupMessageEvent event) {
+
         if (getLastMessage().equals(content) && !getBotLastSentMessage().equals(content)) {
             setRatePercent(getRatePercent() + 0.1);
         } else {
@@ -78,39 +114,41 @@ public class IdleState extends BotState {
             event.getGroup().sendMessage(getLastMessage());
             setRatePercent(0);
         }
+    }
 
-        if (content.toLowerCase().startsWith("getdef")) {
-            String word = content.split(" ")[1];
-            String result = "";
-            try{
-                result = qqBot.getBotController().getWordDef(word);
-            } catch (Exception exception) {
-                result = "找不到单词，或者遇到异常，解析失败" ;
-            } finally {
-                event.getGroup().sendMessage(result);
-            }
+    public void trySendAdSchedule() {
+
+        boolean intervalOK = (System.currentTimeMillis() - lastTimeSendAdOrEnterChalState) > (hourInterval * 60 * 60 * 1000);
+        if(!intervalOK)
+            return;
+
+        sendAdRate += 0.03;
+        if(CommonUtil.randomYes(sendAdRate)) {
+            qqBot.sendMsgToGroup(adMessage, groupId);
+            sendAdRate = 0;
+            lastTimeSendAdOrEnterChalState = System.currentTimeMillis();
         }
 
-        if(content.startsWith("出题")) {
-            qqBot.enterChallengeState(groupId);
-        }
-
-
-        return ListeningStatus.LISTENING;
     }
 
     @Override
-    public void onEnterState() {
-        log.info("bot enter idle state groupId is {0}", groupId);
-        //qqBot.sendMsgToDevGroups("机器人进入Idle状态 groupId is " + groupId);
+    public void onEnterState(GroupState oldState) {
+        log.info("bot enter idle state groupId is {}", groupId);
     }
 
     @Override
-    public void onExitState() {
-        log.info("bot exit idle state groupId is {0}", groupId);
-        //qqBot.sendMsgToDevGroups("机器人退出Idle状态 groupId is " + groupId);
+    public void onExitState(GroupState newState) {
+        log.info("bot exit idle state groupId is {}", groupId);
+
+        if(newState instanceof ChallengeState) {
+            lastTimeSendAdOrEnterChalState = System.currentTimeMillis();
+        }
     }
 
+	@Override
+	public String getStateStr() {
+		return STATE_STR;
+	}
 
 
 }

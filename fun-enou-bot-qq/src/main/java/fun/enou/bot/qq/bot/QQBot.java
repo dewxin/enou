@@ -11,15 +11,13 @@ import fun.enou.bot.qq.bot.challenge.WordChallenge;
 import fun.enou.bot.qq.bot.listener.FriendEventListener;
 import fun.enou.bot.qq.bot.listener.FriendMessageListener;
 import fun.enou.bot.qq.bot.listener.GroupMessageListener;
-import fun.enou.bot.qq.bot.state.IdleState;
-import fun.enou.bot.qq.bot.state.BotState;
-import fun.enou.bot.qq.bot.state.ChallengeState;
+import fun.enou.bot.qq.bot.state.GroupStates;
 import fun.enou.bot.qq.config.BotProperty;
 import fun.enou.bot.qq.controller.BotController;
 import fun.enou.core.redis.RedisManager;
 import lombok.extern.slf4j.Slf4j;
 import net.mamoe.mirai.Bot;
-import net.mamoe.mirai.BotFactoryJvm;
+import net.mamoe.mirai.BotFactory;
 import net.mamoe.mirai.contact.ContactList;
 import net.mamoe.mirai.contact.Friend;
 import net.mamoe.mirai.contact.Group;
@@ -32,10 +30,13 @@ import redis.clients.jedis.Jedis;
 @Slf4j
 public class QQBot {
 
+	/* FIXME the mirai module we rely on has a real severe bug, will occupying the whole cpu and memory 
+	   when the connection is reset by the remote end. */
 	private Bot bot;
 	private Friend tmpUser;
 
-	private HashMap<Long, BotState> stateMap = new HashMap<>();
+	//due to the lack of memory , this field needs to be reset sometimes.
+	private HashMap<Long, GroupStates> groupIdToStateMap = new HashMap<>();
 	
 	@Autowired
 	private ApplicationContext context;
@@ -48,21 +49,13 @@ public class QQBot {
 	@Autowired
 	private BotController botController;
 	
-	public BotState getGroupState(Long groupId) {
-		if(!stateMap.containsKey(groupId)) {
-			stateMap.put(groupId, IdleState.newInstance(this, groupId));
+	public GroupStates getGroupStates(Long groupId) {
+		if(!groupIdToStateMap.containsKey(groupId)) {
+			groupIdToStateMap.put(groupId, GroupStates.newInstance(this, groupId));
 		}
-		return stateMap.get(groupId);
+		return groupIdToStateMap.get(groupId);
 	}
 
-	public void setGroupState(Long groupId, BotState botState) {
-		if(!stateMap.containsKey(groupId)) {
-			stateMap.put(groupId, IdleState.newInstance(this, groupId));
-			return;
-		}
-
-		stateMap.replace(groupId, botState);
-	}
 
 	public Bot getBot() {
 		return bot;
@@ -78,7 +71,7 @@ public class QQBot {
 
 	public void init() {
 		WordChallenge.instance().setBot(this);
-
+		WordChallenge.instance().prepare();
 	}
 
 	public void createInstanceAndLogin() {
@@ -93,7 +86,7 @@ public class QQBot {
 		BotConfiguration botConfiguration = new BotConfiguration() ;
 		botConfiguration.setProtocol(protocol);
 		botConfiguration.fileBasedDeviceInfo("deviceInfo.json");
-		bot = BotFactoryJvm.newBot(botProperty.getAccount(), botProperty.getPassword(), botConfiguration);
+		bot = BotFactory.INSTANCE.newBot(botProperty.getAccount(), botProperty.getPassword(), botConfiguration);
 		
 		bot.login();
 		log.info("{} bot login succeed", bot.getNick());
@@ -104,9 +97,9 @@ public class QQBot {
 	
 	public void registerEvents() {
 
-		Events.registerEvents(bot, new GroupMessageListener(this));
-		Events.registerEvents(bot, new FriendMessageListener());
-		Events.registerEvents(bot, new FriendEventListener());
+		bot.getEventChannel().registerListenerHost(new GroupMessageListener(this));
+		bot.getEventChannel().registerListenerHost(new FriendMessageListener());
+		bot.getEventChannel().registerListenerHost(new FriendEventListener());
 		tmpUser = bot.getFriend(botProperty.getTmpUser());
 		tmpUser.sendMessage("bot is running");
 		
@@ -118,28 +111,23 @@ public class QQBot {
 		tmpUser.sendMessage(message);
 		tmpUser.sendMessage("快登录http://www.enou.fun复习一下单词吧。");
 	}
+
+	public void trySendGroupAdMessage() {
+		for(GroupStates groupStates :groupIdToStateMap.values()){
+			groupStates.trySendGroupAdMessage();
+		}
+	}
 	
 	public void enterChallengeState(Long groupId) {
-		ChallengeState state = ChallengeState.newInstance(this, groupId);
-		enterState(groupId, state);
+		GroupStates groupStates = getGroupStates(groupId);
+		groupStates.enterChallengeState();
 	}
 
 	public void enterIdleState(Long groupId) {
-		IdleState state = IdleState.newInstance(this, groupId);
-		enterState(groupId, state);
+		GroupStates groupStates = getGroupStates(groupId);
+		groupStates.enterIdleState();
 	}
 
-	private void enterState(Long groupId, BotState botState) {
-		BotState prevState = getGroupState(groupId);
-		if(prevState != null){
-			prevState.onExitState();
-		}
-
-		setGroupState(groupId, botState);
-
-		botState.onEnterState();
-	}
-	
 	public void sendMsgToAllGroups(String message) {
 		if(isDevProfile()) {
 			sendMsgToDevGroups(message);
@@ -151,6 +139,10 @@ public class QQBot {
         for(Group group: groupList) {
             group.sendMessage(message);
         }
+	}
+
+	public void sendMsgToGroup(String message, Long groupId) {
+		getBot().getGroup(groupId).sendMessage(message);
 	}
 
 	private boolean isDevProfile() {

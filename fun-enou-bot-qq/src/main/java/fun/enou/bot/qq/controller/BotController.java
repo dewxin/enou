@@ -12,7 +12,9 @@ import org.springframework.web.bind.annotation.RestController;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.github.dewxin.generated.auto_client.AlphaClient;
+import com.github.dewxin.generated.auto_client.DtoWebChalAnswerCount;
 import com.github.dewxin.generated.auto_client.DtoWebWord;
+import com.github.dewxin.generated.auto_client.StatisticClient;
 
 import fun.enou.core.msg.EnouMsgJson;
 
@@ -23,6 +25,8 @@ public class BotController {
 	@Autowired
 	private AlphaClient alphaClient;
 
+	@Autowired
+	private StatisticClient statisticClient;
 
 	@GetMapping("/word/random") 
 	public String getOneRandomWord(){
@@ -62,12 +66,20 @@ public class BotController {
 		}
 
 		return def;
-		
 	}
 	
 	public List<DtoWebWord> getRandomWord(Integer count) {
 		
 		return  alphaClient.getRandomWord(count).getData().getDtoWebWordList();
+	}
+
+	public void pileUpChalAnswerCount(Integer id, String spell, Integer correctCount, Integer wrongCount){
+		DtoWebChalAnswerCount answerCount = new DtoWebChalAnswerCount();
+		answerCount.setId(id);
+		answerCount.setWordSpell(spell);
+		answerCount.setFalseOptionCount(wrongCount);
+		answerCount.setRightOptionCount(correctCount);
+	 	statisticClient.pileUpChalAnswerCount(answerCount);
 	}
 	
 	
