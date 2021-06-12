@@ -3,7 +3,7 @@
         PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
-<mapper namespace="fun.enou.alpha.repository.ext.OldUserWordExt">
+<mapper namespace="fun.enou.alpha.mapper.OldUserWordMapper">
     <update id="update" parameterType="fun.enou.alpha.dto.dtodb.DtoDbOldUserWord">
 		update user_word set
 			word = #{word}

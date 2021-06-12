@@ -1,11 +1,11 @@
-package fun.enou.alpha.service;
+package fun.enou.alpha.service.impl;
 
 import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Optional;
 
+import fun.enou.alpha.mapper.ArticleMapper;
+import fun.enou.alpha.service.ArticleService;
+import fun.enou.alpha.service.UserWordService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -13,14 +13,6 @@ import org.springframework.stereotype.Service;
 
 import fun.enou.alpha.dto.dtodb.DtoDbArticle;
 import fun.enou.alpha.dto.dtoweb.DtoWebArticle;
-import fun.enou.alpha.misc.SessionHolder;
-import fun.enou.alpha.repository.ArticleRepository;
-import fun.enou.alpha.repository.UserWordRepository;
-import fun.enou.alpha.msg.MsgEnum;
-import fun.enou.core.msg.EnouMessageException;
-import redis.clients.jedis.Jedis;
-import fun.enou.core.redis.RedisManager;
-import lombok.extern.slf4j.Slf4j;
 
 /**
  * @Author: nagi
@@ -30,22 +22,23 @@ import lombok.extern.slf4j.Slf4j;
  * @Modified By:
  */
 @Service
-public class TArticleService implements IArticleService {
+public class ArticleServiceImpl implements ArticleService {
 
 	@Autowired
-	private ArticleRepository articleRepository;
+	private ArticleMapper articleMapper;
 
 	@Autowired
-	private IUserWordService userWordService;
+	private UserWordService userWordService;
 
 
 	@Override
 	public DtoWebArticle saveArticle(DtoWebArticle webArticle) {
 		DtoDbArticle dbArticle = webArticle.toDtoDb();
 
-		DtoDbArticle resDb = articleRepository.save(dbArticle);
+		Long id = articleMapper.save(dbArticle);
+		dbArticle.setId(id);
 
-		DtoWebArticle resWeb = resDb.toDtoWeb();
+		DtoWebArticle resWeb = dbArticle.toDtoWeb();
 		return resWeb;
 	}
 
@@ -53,7 +46,7 @@ public class TArticleService implements IArticleService {
 
 		List<DtoWebArticle> returnValue = new ArrayList<>();
 
-		List<DtoDbArticle> dbArticleList = articleRepository.findAll(pageable).getContent();
+		List<DtoDbArticle> dbArticleList = articleMapper.findAll(pageable.getOffset(), pageable.getPageSize());
 
 		dbArticleList.forEach(dtoDbArticle -> {
 			returnValue.add(dtoDbArticle.toDtoWeb());
@@ -69,15 +62,5 @@ public class TArticleService implements IArticleService {
 	}
 
 
-	@Override
-	public List<String> getUnknownWords(Long articleId) throws EnouMessageException {
-		Optional<DtoDbArticle> articleOptional = articleRepository.findById(articleId);
-		if(!articleOptional.isPresent()){
-			MsgEnum.ARTICLE_NOT_FOUND.ThrowException();
-		}
-		
-		DtoDbArticle dtoDbArticle = articleOptional.get();
-		return userWordService.getUnknownWords(dtoDbArticle.getContent());
-	}
 
 }

@@ -1,6 +1,6 @@
 package fun.enou.alpha.dto.dtodb;
 
-import fun.enou.alpha.dto.dtoweb.DtoWebOldUserWord;
+import fun.enou.alpha.dto.dtoweb.DtoWebUserWord;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.relational.core.mapping.Column;
 import org.springframework.data.relational.core.mapping.Table;
@@ -42,8 +42,8 @@ public class DtoDbOldUserWord {
         this.createdAt = createdAt;
     }
 
-    public DtoWebOldUserWord toDtoWeb() {
-        return new DtoWebOldUserWord(id, word);
+    public DtoWebUserWord toDtoWeb() {
+        return new DtoWebUserWord(id, word);
     }
 
     public Long getId() {

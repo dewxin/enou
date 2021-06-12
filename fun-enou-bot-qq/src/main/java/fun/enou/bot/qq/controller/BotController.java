@@ -28,7 +28,7 @@ public class BotController {
 	@Autowired
 	private StatisticClient statisticClient;
 
-	@GetMapping("/word/random") 
+	@GetMapping("/word/random")
 	public String getOneRandomWord(){
 
     	EnouMsgJson<String> strEntity = alphaClient.getOneRandomWord();

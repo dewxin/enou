@@ -14,7 +14,7 @@ import javax.validation.constraints.Pattern;
  * @Attention:
  */
 
-public class DtoWebOldUserWord {
+public class DtoWebUserWord {
 
     private Long id;
 
@@ -23,10 +23,10 @@ public class DtoWebOldUserWord {
     @Pattern(regexp ="[a-zA-Z \\-]+")
     private String word;
 
-    public DtoWebOldUserWord() {
+    public DtoWebUserWord() {
     }
 
-    public DtoWebOldUserWord(Long id, String word) {
+    public DtoWebUserWord(Long id, String word) {
         this.id = id;
         this.word = word;
     }

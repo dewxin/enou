@@ -3,7 +3,7 @@
         PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
-<mapper namespace="fun.enou.alpha.repository.ext.UserThirdInfoExt">
+<mapper namespace="fun.enou.alpha.mapper.UserThirdInfoMapper">
     <insert id="save" parameterType="fun.enou.alpha.dto.dtodb.DtoDbUserThirdInfo">
 		insert into euser_third_info (user_id, third_party, third_account)
 		values (#{userId}, #{thirdParty}, #{thirdAccount})

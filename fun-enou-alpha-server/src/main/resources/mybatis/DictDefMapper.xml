@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="fun.enou.alpha.mapper.DictDefMapper">
+    <select id="findAllById" parameterType="java.util.List" resultType="fun.enou.alpha.dto.dtodb.DtoDbDictDef">
+        select * from oxford_dict_def
+        where id in
+            <foreach collection="defIdList" item="id" separator="," open="(" close=")">
+                #{id}
+            </foreach>
+    </select>
+
+</mapper>

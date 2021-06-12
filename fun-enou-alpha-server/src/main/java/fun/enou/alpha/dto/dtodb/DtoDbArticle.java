@@ -8,7 +8,7 @@ import org.springframework.data.relational.core.mapping.Table;
 public class DtoDbArticle {
 
     @Id
-    private Long id;
+    private long id;
     private String title;
     private String content;
     private int like;
@@ -18,6 +18,11 @@ public class DtoDbArticle {
         this.title = title;
         this.content = content;
         this.like = like;
+    }
+
+    public DtoDbArticle(String title, String content) {
+        this.title = title;
+        this.content = content;
     }
 
     public DtoWebArticle toDtoWeb() {

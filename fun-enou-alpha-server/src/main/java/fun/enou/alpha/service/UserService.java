@@ -6,7 +6,7 @@ import fun.enou.alpha.dto.dtoweb.DtoWebUserThirdInfo;
 import fun.enou.core.msg.EnouMessageException;
 
 
-public interface IUserService {
+public interface UserService {
     DtoWebUser saveUser(DtoWebUser webUser) throws EnouMessageException;
 
     boolean loginInfoIsCorrect(DtoWebUser webUser);

@@ -1,4 +1,4 @@
-package fun.enou.alpha.controller;
+package fun.enou.alpha.controller.dev;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Profile;
@@ -8,7 +8,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import fun.enou.alpha.dto.dtoweb.DtoWebWord;
-import fun.enou.alpha.service.IWordService;
+import fun.enou.alpha.service.WordService;
 import lombok.extern.slf4j.Slf4j;
 
 @Profile("dev")
@@ -18,7 +18,7 @@ import lombok.extern.slf4j.Slf4j;
 public class DevWordController {
 	
 	@Autowired
-	private IWordService wordService;
+	private WordService wordService;
 
 	@PostMapping
 	public void uploadWord(@RequestBody DtoWebWord webWord) {

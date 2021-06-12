@@ -1,4 +1,4 @@
-package fun.enou.alpha.service;
+package fun.enou.alpha.service.impl;
 
 import fun.enou.alpha.dto.dtodb.DtoDbUser;
 import fun.enou.alpha.dto.dtodb.DtoDbUserThirdInfo;
@@ -8,7 +8,8 @@ import fun.enou.alpha.misc.SessionHolder;
 import fun.enou.alpha.misc.LoginTokenManager;
 import fun.enou.alpha.msg.MsgEnum;
 import fun.enou.alpha.repository.UserRepository;
-import fun.enou.alpha.repository.UserThirdInfoRepository;
+import fun.enou.alpha.mapper.UserThirdInfoMapper;
+import fun.enou.alpha.service.UserService;
 import fun.enou.core.encoder.EncodeUserPwd;
 import fun.enou.core.encoder.EncodeUserPwdAspect;
 import fun.enou.core.msg.EnouMessageException;
@@ -30,7 +31,7 @@ import java.util.Optional;
  * @see EncodeUserPwdAspect
  */
 @Service
-public class TUserService implements IUserService{
+public class UserServiceImpl implements UserService {
 
 	@Autowired
 	private SessionHolder sessionHolder;
@@ -40,12 +41,12 @@ public class TUserService implements IUserService{
     private UserRepository userRepository;
     
     @Autowired
-    private UserThirdInfoRepository userThirdInfoRepository;
+    private UserThirdInfoMapper userThirdInfoRepository;
 
     @Autowired
     private RedisManager redisManager;
 
-    public TUserService() {
+    public UserServiceImpl() {
     }
 
     @EncodeUserPwd

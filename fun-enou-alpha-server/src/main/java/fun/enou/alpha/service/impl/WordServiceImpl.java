@@ -1,15 +1,14 @@
-package fun.enou.alpha.service;
-
-import static org.hamcrest.CoreMatchers.containsString;
+package fun.enou.alpha.service.impl;
 
 import java.text.MessageFormat;
 import java.util.Arrays;
-import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Optional;
-import java.util.Random;
 
+import fun.enou.alpha.mapper.DictDefMapper;
+import fun.enou.alpha.mapper.DictWordMapper;
+import fun.enou.alpha.service.WordService;
 import org.springframework.beans.factory.annotation.Autowired;
 import redis.clients.jedis.Jedis;
 import org.springframework.stereotype.Service;
@@ -22,22 +21,19 @@ import fun.enou.alpha.dto.dtodb.DtoDbDictDef;
 import fun.enou.alpha.dto.dtodb.DtoDbDictWord;
 import fun.enou.alpha.dto.dtoweb.DtoWebWord;
 import fun.enou.alpha.msg.MsgEnum;
-import fun.enou.alpha.repository.DictDefRepository;
-import fun.enou.alpha.repository.DictWordRepository;
 import fun.enou.core.msg.EnouMessageException;
 import fun.enou.core.redis.RedisManager;
-import fun.enou.core.tool.RandomUtil;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
 @Service
-public class TWordService implements IWordService{
+public class WordServiceImpl implements WordService {
 
 	@Autowired
-	private DictWordRepository wordRepository;
+	private DictWordMapper wordRepository;
 	
 	@Autowired
-	private DictDefRepository defRepository;
+	private DictDefMapper dictDefMapper;
 
 	@Autowired
 	private RedisManager redisManager;
@@ -64,8 +60,8 @@ public class TWordService implements IWordService{
 		List<DtoDbDictDef> dictDefList = webWord.toDtoDbDef();
 		List<Integer> resultDefList = new LinkedList<>();
 		for(DtoDbDictDef dictDef : dictDefList) {
-			DtoDbDictDef result = defRepository.save(dictDef);
-			resultDefList.add(result.getId());
+			Integer id = dictDefMapper.save(dictDef);
+			resultDefList.add(id);
 		}
 		
 		ObjectMapper objMapper = new ObjectMapper();
@@ -90,7 +86,7 @@ public class TWordService implements IWordService{
 			MsgEnum.WORD_DEF_LIST_PARSE_FAIL.ThrowException();
 		}
 		
-		Iterable<DtoDbDictDef> dictDefList =  defRepository.findAllById(defIdList);
+		List<DtoDbDictDef> dictDefList =  dictDefMapper.findAllById(defIdList);
 		
 		return new DtoWebWord(dbDictWord, dictDefList);
 	}
@@ -120,13 +116,13 @@ public class TWordService implements IWordService{
 			for(int i = 0; i< keyValueList.size(); i+=2){
 				int id = Integer.parseInt(keyValueList.get(i).toString());
 				String spell = keyValueList.get(i+1).toString();
-				Optional<DtoDbDictWord> dbDictWordOptional = wordRepository.findById(id);
-				if(!dbDictWordOptional.isPresent()) {
+				DtoDbDictWord dbDictWord = wordRepository.findById(id);
+				if(dbDictWord == null) {
 					log.warn("cannot find word in database id {} spell {}", id, spell);
 					continue;
 				}
 			
-				DtoWebWord word = getWebWordByDictWord(dbDictWordOptional.get());
+				DtoWebWord word = getWebWordByDictWord(dbDictWord);
 				resultList.add(word);
 			}
 

@@ -12,7 +12,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import fun.enou.alpha.dto.dtoweb.DtoWebWord;
 import fun.enou.alpha.dto.dtoweb.DtoWebWordList;
-import fun.enou.alpha.service.IWordService;
+import fun.enou.alpha.service.WordService;
 import fun.enou.core.msg.AutoWrapMsg;
 import fun.enou.core.msg.EnouMessageException;
 
@@ -23,7 +23,7 @@ public class ApiController {
 	
 	
 	@Autowired
-	private IWordService wordService;
+	private WordService wordService;
 
 	@GetMapping("/word/{word}")
 	public ResponseEntity<DtoWebWord> getWordInfo(@PathVariable String word) throws EnouMessageException {

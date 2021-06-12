@@ -3,7 +3,7 @@ package fun.enou.alpha.controller;
 import fun.enou.alpha.dto.dtoweb.DtoWebUser;
 import fun.enou.alpha.dto.dtoweb.DtoWebUserThirdInfo;
 import fun.enou.alpha.msg.MsgEnum;
-import fun.enou.alpha.service.IUserService;
+import fun.enou.alpha.service.UserService;
 import fun.enou.core.msg.AutoWrapMsg;
 import fun.enou.core.msg.EnouMessageException;
 import lombok.extern.slf4j.Slf4j;
@@ -21,7 +21,7 @@ import javax.validation.Valid;
 public class UserController {
 
 	@Autowired
-	IUserService userService;
+    UserService userService;
 	
     /**
      * 用户登录获取token

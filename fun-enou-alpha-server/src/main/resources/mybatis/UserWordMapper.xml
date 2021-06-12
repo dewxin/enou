@@ -3,16 +3,26 @@
         PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
-<mapper namespace="fun.enou.alpha.repository.ext.UserWordExt">
+<mapper namespace="fun.enou.alpha.mapper.UserWordMapper">
     <insert id="save" parameterType="fun.enou.alpha.dto.dtodb.ext.DtoDbUserWord">
       insert into euser_word (user_id, word_id)
       values (#{userId}, #{wordId})
       on duplicate key 
-      update word_id = #{wordId};
+      update updated_time = CURRENT_TIMESTAMP, query_count = query_count+1;
     </insert>
     
-    <select id="getAllWordList" parameterType="Long" resultType="Integer">
+    <select id="getAllWordList" parameterType="fun.enou.alpha.dto.dtodb.ext.DtoDbUserWordPage" resultType="Integer">
    		select word_id from euser_word 
-   		where user_id = #{userId};
+   		where user_id = #{userId}
+      limit #{limit} offset #{offset};
     </select>
+
+    <select id="getWordAfterTime" parameterType="fun.enou.alpha.dto.dtodb.ext.DtoDbUserWordTimeStampPage" resultType="Integer">
+   		select word_id from euser_word 
+   		where user_id = #{userId} and updated_time > #{updatedTimestamp}
+      order by updated_time desc 
+      limit #{limit} offset #{offset} ;
+    </select>      
+
+
 </mapper>

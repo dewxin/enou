@@ -1,15 +1,14 @@
 package fun.enou.alpha.redis;
 
-import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 
+import fun.enou.alpha.mapper.DictWordMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.stereotype.Component;
 
 import fun.enou.alpha.dto.dtodb.DtoDbDictWord;
-import fun.enou.alpha.repository.DictWordRepository;
 import fun.enou.core.redis.RedisManager;
 import lombok.extern.slf4j.Slf4j;
 import redis.clients.jedis.Jedis;
@@ -22,7 +21,7 @@ public class WordCacheRunner implements CommandLineRunner{
     private RedisManager redisManager;
 
     @Autowired
-    private DictWordRepository wordRepository;
+    private DictWordMapper wordRepository;
 
     @Override
     public void run(String... args) throws Exception {
@@ -36,12 +35,7 @@ public class WordCacheRunner implements CommandLineRunner{
 
             log.info("redis word count < mysql word count, loading all the word to redis");
 
-            Iterable<DtoDbDictWord> wordCollection = wordRepository.findAll();
-
-            List<DtoDbDictWord> wordList = new LinkedList<>();
-            for(DtoDbDictWord word : wordCollection) {
-                wordList.add(word);
-            }
+            List<DtoDbDictWord> wordList = wordRepository.findAll();
 
             for(DtoDbDictWord word : wordList) {
                 String wordId = word.getId().toString();

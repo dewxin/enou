@@ -5,7 +5,7 @@ import java.util.List;
 import fun.enou.alpha.dto.dtoweb.DtoWebWord;
 import fun.enou.core.msg.EnouMessageException;
 
-public interface IWordService {
+public interface WordService {
 
 	void uploadWord(DtoWebWord webWord);
 	
