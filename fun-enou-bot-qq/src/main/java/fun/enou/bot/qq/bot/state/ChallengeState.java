@@ -7,6 +7,7 @@ import java.util.Timer;
 import java.util.TimerTask;
 
 import com.github.dewxin.generated.auto_client.DtoWebWord;
+import com.netflix.client.ClientException;
 
 import fun.enou.bot.qq.bot.QQBot;
 import fun.enou.bot.qq.bot.challenge.OneChallenge;
@@ -33,9 +34,8 @@ public class ChallengeState extends GroupState {
     private Timer challengeTimer;
 
     private HashSet<Long> userAlreadyAnswerdSet = new HashSet<>();
-    private ArrayList<User>  correctUserList = new ArrayList<>();
-    private ArrayList<User>  wrongUserList = new ArrayList<>();
-
+    private ArrayList<User> correctUserList = new ArrayList<>();
+    private ArrayList<User> wrongUserList = new ArrayList<>();
 
     private void resetAnswerUsers() {
         userAlreadyAnswerdSet.clear();
@@ -46,21 +46,21 @@ public class ChallengeState extends GroupState {
     @Override
     public ListeningStatus handleGroupMessage(GroupMessageEvent event) {
         String msg = event.getMessage().contentToString();
-        if(currentChallenge == null) {
+        if (currentChallenge == null) {
             qqBot.enterIdleState(groupId);
             return ListeningStatus.LISTENING;
         }
 
         Long userId = event.getSender().getId();
         boolean userHasAnswerd = userAlreadyAnswerdSet.contains(userId);
-        if(currentChallenge.isValidAnswer(msg) && !userHasAnswerd) {
+        if (currentChallenge.isValidAnswer(msg) && !userHasAnswerd) {
             userAlreadyAnswerdSet.add(userId);
 
-            if(currentChallenge.isTrueAnswer(msg)) {
+            if (currentChallenge.isTrueAnswer(msg)) {
                 correctUserList.add(event.getSender());
                 boolean notRun = challengTimerTask.cancel();
-                if(notRun) {
-                    challengeTimer.schedule(new ChallengeOverTask(this), 1000l*1);
+                if (notRun) {
+                    challengeTimer.schedule(new ChallengeOverTask(this), 1000l * 1);
                 }
             } else {
                 wrongUserList.add(event.getSender());
@@ -81,30 +81,42 @@ public class ChallengeState extends GroupState {
             qqBot.enterIdleState(groupId);
             return;
         }
-        qqBot.getBot().getGroup(groupId).sendMessage("请听题:   Attention: ");
-        qqBot.getBot().getGroup(groupId).sendMessage(currentChallenge.getQuestion());
+        try {
+            qqBot.getBot().getGroup(groupId).sendMessage("请听题:   Attention: ");
+            qqBot.getBot().getGroup(groupId).sendMessage(currentChallenge.getQuestion());
+            String allOptions = String.join("\r\n", currentChallenge.getOptionList());
+            qqBot.getBot().getGroup(groupId).sendMessage(allOptions);
 
-        String allOptions = String.join("\r\n", currentChallenge.getOptionList());
-        qqBot.getBot().getGroup(groupId).sendMessage(allOptions);
+        } catch (Exception ex) {
+            log.warn("Challenge.onEnterState exception throw :", ex.getMessage());
+            qqBot.enterIdleState(groupId);
+        }
+
 
         challengeTimer = new Timer(true);
         challengTimerTask = new ChallengeOverTask(this);
         challengeTimer.schedule(challengTimerTask, 1000l*30);
     }
 
-
     private void challengeOver() {
         qqBot.enterIdleState(groupId);
-        uploadStatisticData();
+        // try{
+        // uploadStatisticData();
+        // } catch (Exception ex) {
+        // log.warn(ex.getMessage());
+        // }
         challengeTimer.cancel();
         challengeTimer = null;
 
         qqBot.getBot().getGroup(groupId).sendMessage(currentChallenge.getExplanation());
-        if(correctUserList.isEmpty()) {
-            qqBot.getBot().getGroup(groupId).sendMessage("居然没有人能解答出我的问题，人生真是寂寞如雪啊~  Even the rain man can solve this, hmmm ");
+        if (correctUserList.isEmpty()) {
+            qqBot.getBot().getGroup(groupId)
+                    .sendMessage("居然没有人能解答出我的问题，人生真是寂寞如雪啊~  Even the rain man can solve this, hmmm ");
         } else {
             StringBuilder userNames = new StringBuilder();
-            correctUserList.forEach((user)->{userNames.append(user.getNick()+ " ");});
+            correctUserList.forEach((user) -> {
+                userNames.append(user.getNick() + " ");
+            });
             String reply = MessageFormat.format("恭喜{0}回答正确, 虽然也没什么卵用。", userNames);
             qqBot.getBot().getGroup(groupId).sendMessage(reply);
         }
@@ -114,7 +126,8 @@ public class ChallengeState extends GroupState {
         DtoWebWord word = currentChallenge.getRightAnswerWord();
         Integer correctCount = correctUserList.size();
         Integer wrongCount = wrongUserList.size();
-        qqBot.getBotController().pileUpChalAnswerCount(word.getId(), word.getSpell(), correctCount, wrongCount);;
+        qqBot.getBotController().pileUpChalAnswerCount(word.getId(), word.getSpell(), correctCount, wrongCount);
+        ;
     }
 
     @Override
@@ -122,27 +135,27 @@ public class ChallengeState extends GroupState {
         log.info("bot exit challenge state groupId is {}", groupId);
     }
 
-	@Override
-	public String getStateStr() {
+    @Override
+    public String getStateStr() {
         return STATE_STR;
-	}
-
+    }
 
     private class ChallengeOverTask extends TimerTask {
 
         private ChallengeState ownerState;;
+
         public ChallengeOverTask(ChallengeState state) {
             this.ownerState = state;
         }
 
         @Override
-        public void run () {
+        public void run() {
             try {
                 ownerState.challengeOver();
 
             } catch (Exception e) {
                 log.warn(e.getMessage());
-            } 
+            }
         }
     }
 }

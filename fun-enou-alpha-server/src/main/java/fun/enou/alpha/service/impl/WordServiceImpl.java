@@ -24,6 +24,7 @@ import fun.enou.alpha.msg.MsgEnum;
 import fun.enou.core.msg.EnouMessageException;
 import fun.enou.core.redis.RedisManager;
 import lombok.extern.slf4j.Slf4j;
+import net.bytebuddy.dynamic.scaffold.MethodGraph.Linked;
 
 @Slf4j
 @Service
@@ -76,14 +77,14 @@ public class WordServiceImpl implements WordService {
 	}
 	
 	private DtoWebWord getWebWordByDictWord(DtoDbDictWord dbDictWord) throws EnouMessageException {
-		ObjectMapper objectMapper = new ObjectMapper();
 		
-		List<Integer> defIdList = new LinkedList<>();
-		try {
-			defIdList = objectMapper.readValue(dbDictWord.getDefId(), new TypeReference<List<Integer>>(){});
-		} catch (JsonProcessingException e) {
-			log.warn(e.getMessage());
-			MsgEnum.WORD_DEF_LIST_PARSE_FAIL.ThrowException();
+		List<Integer> defIdList = dbDictWord.getDefIdList();
+
+		// these words should be ignored when loaded into redis, just in case it however occurs again.
+		if(defIdList.size() == 0){
+			log.error("getWebWordByDictWord Id {} word {} has no def.", dbDictWord.getId(), dbDictWord.getSpell());
+			return new DtoWebWord(dbDictWord, new LinkedList<DtoDbDictDef>());
+			//todo need collect these empty def words.
 		}
 		
 		List<DtoDbDictDef> dictDefList =  dictDefMapper.findAllById(defIdList);
@@ -110,7 +111,7 @@ public class WordServiceImpl implements WordService {
         try(Jedis jedis = redisManager.getJedis()) {
 
 			String keyName = "wordIdToSpell";
-			String script = MessageFormat.format("return redis.call(''hrandmember'', ''{0}'', {1})", keyName, count);
+			String script = MessageFormat.format("return redis.call(''hrandfield'', ''{0}'', {1}, ''WITHVALUES'')", keyName, count);
 
 			List<Object> keyValueList = (List<Object>)(jedis.eval(script));
 			for(int i = 0; i< keyValueList.size(); i+=2){

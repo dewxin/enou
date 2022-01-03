@@ -38,9 +38,15 @@ public class WordCacheRunner implements CommandLineRunner{
             List<DtoDbDictWord> wordList = wordRepository.findAll();
 
             for(DtoDbDictWord word : wordList) {
+                if(word.getDefIdList().size() == 0){
+                    log.error("WordCacheRunner.run Id {} word {} has no def. skip", word.getId(), word.getSpell());
+                    continue;
+                }
+
                 String wordId = word.getId().toString();
                 String wordSpell = word.getSpell();
                 jedis.hset("wordIdToSpell", wordId, wordSpell);
+
             }
             
             log.info("all words is loaded to redis");

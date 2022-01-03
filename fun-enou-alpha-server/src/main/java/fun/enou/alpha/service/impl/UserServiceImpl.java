@@ -124,9 +124,13 @@ public class UserServiceImpl implements UserService {
 	@Override
 	public DtoWebUserThirdInfo getUserThirdInfo(String thirdParty) {
 		Long userId = sessionHolder.getUserId();
-		
+
 		DtoDbUserThirdInfo dbUserThirdInfo = new DtoDbUserThirdInfo(userId, thirdParty, "");
-		dbUserThirdInfo = userThirdInfoRepository.find(dbUserThirdInfo);
+		DtoDbUserThirdInfo result = userThirdInfoRepository.find(dbUserThirdInfo);
+		if(result!=null)
+        {
+            dbUserThirdInfo = result;
+        }
 		return dbUserThirdInfo.ToDtoWeb();
 	}
 

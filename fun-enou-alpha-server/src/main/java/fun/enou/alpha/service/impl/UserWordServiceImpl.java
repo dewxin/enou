@@ -19,6 +19,8 @@ import fun.enou.alpha.msg.MsgEnum;
 import fun.enou.core.msg.EnouMessageException;
 import fun.enou.core.redis.RedisManager;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
 import redis.clients.jedis.Jedis;
 
 @Service
@@ -26,10 +28,10 @@ import redis.clients.jedis.Jedis;
 public class UserWordServiceImpl implements UserWordService {
 
     @Autowired
-    private DictWordMapper dictWordRepository;
+    private DictWordMapper dictWordMapper;
 
     @Autowired
-    private UserWordMapper userWordRepository;
+    private UserWordMapper userWordMapper;
 
     @Autowired
     private SessionHolder sessionHolder;
@@ -38,9 +40,16 @@ public class UserWordServiceImpl implements UserWordService {
 	private RedisManager redisManager;
 
 
-    @Override
+	@Override
+	public int getWordCount() {
+		long userId = sessionHolder.getUserId();
+	    return userWordMapper.count(userId);
+	}
+
+	@Override
+	@Transactional(propagation = Propagation.NEVER)
     public void learnWord(String spell) throws EnouMessageException {
-        DtoDbDictWord dbDictWord = dictWordRepository.findBySpell(spell);
+        DtoDbDictWord dbDictWord = dictWordMapper.findBySpell(spell);
         if(dbDictWord == null) {
             MsgEnum.WORD_NOT_FOUND.ThrowException();
         }
@@ -49,14 +58,14 @@ public class UserWordServiceImpl implements UserWordService {
         DtoDbUserWord dbUserWord = new DtoDbUserWord();
         dbUserWord.setUserId(userId);
         dbUserWord.setWordId(dbDictWord.getId());
-        userWordRepository.save(dbUserWord);
+        userWordMapper.save(dbUserWord);
 
     }
 
 	private List<String> getKnownWordList(Long userId, int offset, int count) {
 		//todo need to profile the cost
 		DtoDbUserWordPage page = new DtoDbUserWordPage(userId, offset, count);
-		List<Integer> wordIdList = userWordRepository.getAllWordList(page);
+		List<Integer> wordIdList = userWordMapper.getAllWordList(page);
 
 		log.info("getKnownWordList userId {} word count {}",userId, wordIdList.size());
 
@@ -92,7 +101,7 @@ public class UserWordServiceImpl implements UserWordService {
 	}
 
 	@Override
-	public List<String> getAllWordsAfter(Long timeStampMilli, int offset, int count) {
+	public List<String> getAllKnownWordsAfter(Long timeStampMilli, int offset, int count) {
 		Timestamp updatedTimestamp = new Timestamp(timeStampMilli);
         Long userId = sessionHolder.getUserId();
 
@@ -102,7 +111,7 @@ public class UserWordServiceImpl implements UserWordService {
 		timeStamp.setOffset(offset);
 		timeStamp.setLimit(count);
 
-        List<Integer> dbWordList = userWordRepository.getWordAfterTime(timeStamp);
+        List<Integer> dbWordList = userWordMapper.getWordAfterTime(timeStamp);
 		return wordIdToSpell(dbWordList);
 	}
 

@@ -20,8 +20,8 @@
     <select id="getWordAfterTime" parameterType="fun.enou.alpha.dto.dtodb.ext.DtoDbUserWordTimeStampPage" resultType="Integer">
    		select word_id from euser_word 
    		where user_id = #{userId} and updated_time > #{updatedTimestamp}
-      order by updated_time desc 
-      limit #{limit} offset #{offset} ;
+        order by updated_time desc, query_count desc, word_id asc
+        limit #{limit} offset #{offset} ;
     </select>      
 
 

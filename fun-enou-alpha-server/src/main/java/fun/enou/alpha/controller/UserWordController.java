@@ -3,7 +3,6 @@ package fun.enou.alpha.controller;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import fun.enou.core.msg.EnouMsgJson;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -30,6 +29,12 @@ public class UserWordController {
         userWordService.learnWord(spell);
     }
 
+    @GetMapping("/count")
+    public ResponseEntity<Integer> getWordCount(){
+        int count = userWordService.getWordCount();
+        return ResponseEntity.ok(count);
+    }
+
     @GetMapping("/getKnownWord")
     public ResponseEntity<List<String>> getKnownWords(@RequestParam int offset, @RequestParam int count) {
         List<String> wordList = userWordService.getKnownWords(offset, count);
@@ -40,7 +45,7 @@ public class UserWordController {
     @GetMapping
     public ResponseEntity<List<DtoWebUserWord>> getWordAfter(@RequestParam Long time, @RequestParam int offset, @RequestParam int count) {
         //todo
-    	List<DtoWebUserWord> result = userWordService.getAllWordsAfter(time,offset,count).stream().map( wordSpell-> new DtoWebUserWord(0l, wordSpell)).collect(Collectors.toList());
+    	List<DtoWebUserWord> result = userWordService.getAllKnownWordsAfter(time,offset,count).stream().map(wordSpell-> new DtoWebUserWord(0l, wordSpell)).collect(Collectors.toList());
     	return ResponseEntity.ok(result);
     }
 

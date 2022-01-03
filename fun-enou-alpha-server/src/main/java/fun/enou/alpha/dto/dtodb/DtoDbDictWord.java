@@ -1,9 +1,21 @@
 package fun.enou.alpha.dto.dtodb;
 
+import java.util.LinkedList;
+import java.util.List;
+
+
 import org.springframework.data.annotation.Id;
 import org.springframework.data.relational.core.mapping.Column;
 import org.springframework.data.relational.core.mapping.Table;
 
+import fun.enou.alpha.msg.MsgEnum;
+import lombok.extern.slf4j.Slf4j;
+
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.ObjectMapper;
+
+@Slf4j
 @Table("oxford_dict_word")
 public class DtoDbDictWord {
 	@Id
@@ -59,7 +71,20 @@ public class DtoDbDictWord {
 	public void setDefId(String defId) {
 		this.defId = defId;
 	}
-	
+
+	public List<Integer> getDefIdList(){
+		ObjectMapper objectMapper = new ObjectMapper();
+		List<Integer> defIdList = new LinkedList<>();
+		try {
+			defIdList = objectMapper.readValue(defId, new TypeReference<List<Integer>>(){});
+		} catch (JsonProcessingException e) {
+			log.warn(e.getMessage());
+			// MsgEnum.WORD_DEF_LIST_PARSE_FAIL.ThrowException();
+			// it can be totally solved, dont throw exceptions.
+		}
+		
+		return defIdList;
+	}
 	
 
 }
